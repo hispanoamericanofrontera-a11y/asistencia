@@ -101,292 +101,655 @@ tr:hover td{background:var(--primary-lighter)}
 .scan-corner.tr{top:-2px;right:-2px;border-left:none;border-bottom:none;border-top-right-radius:14px}
 .scan-corner.bl{bottom:-2px;left:-2px;border-right:none;border-top:none;border-bottom-left-radius:14px}
 .scan-corner.br{bottom:-2px;right:-2px;border-left:none;border-top:none;border-bottom-right-radius:14px}
-.scan-line{position:absolute;left:4px;right:4px;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px;box-shadow:0 0 12px var(--accent);animation:scanAnim 2s ease-in-out infinite}
-@keyframes scanAnim{0%,100%{top:0;opacity:.2}50%{top:calc(100% - 3px);opacity:1}}
-.camera-status{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.7);color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
-.camera-status.active{background:rgba(16,185,129,.85)}
-.camera-status-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.camera-select-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
-.camera-select-bar label{font-size:12px;font-weight:600;color:var(--text-secondary);white-space:nowrap}
-.method-tabs{display:flex;gap:8px;margin-bottom:16px}
-.method-tab{flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;text-align:center;font-size:13px;font-weight:500;color:var(--text-secondary);transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:6px}
-.method-tab:hover{border-color:var(--accent);color:var(--primary)}
-.method-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.method-content{display:none}
-.method-content.active{display:block}
-.toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column-reverse;gap:8px;align-items:center}
-.toast{background:var(--text);color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn .3s;display:flex;align-items:center;gap:8px}
-@keyframes toastIn{from{opacity:0;transform:translateY(12px)}}
-.toast.success{background:var(--success)}.toast.error{background:var(--danger)}.toast.info{background:var(--primary)}
-.drop-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:35px;text-align:center;background:var(--bg);cursor:pointer;transition:all var(--tr)}
-.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:var(--primary-lighter)}
-.drop-zone-icon{font-size:42px;color:var(--text-muted);margin-bottom:8px}
-.drop-zone-text{color:var(--text-secondary);font-size:13px}
-.filters-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
-.qr-code-wrapper{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;background:var(--bg);border-radius:var(--radius-sm)}
-#qrcode{background:#fff;padding:16px;border-radius:10px;box-shadow:var(--shadow)}
-.holiday-item{padding:12px 16px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border)}
-.holiday-date{font-weight:700;color:var(--primary);font-size:13px}
-.holiday-name{color:var(--text-secondary);font-size:13px}
-.time-display-card{background:linear-gradient(135deg,#0f2b46,#1a5276);color:#fff;border-radius:var(--radius);padding:24px;margin-bottom:16px;text-align:center;border:none;box-shadow:0 4px 20px rgba(15,43,70,.3)}
-.time-display-clock{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
-.time-display-date{font-size:15px;opacity:.8;margin-bottom:12px}
-.time-display-status{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:24px;font-size:13px;font-weight:700;letter-spacing:.3px}
-.status-ontime{background:rgba(16,185,129,.2);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
-.status-before{background:rgba(14,165,233,.2);color:#7dd3fc;border:1px solid rgba(14,165,233,.3)}
-.status-late{background:rgba(245,158,11,.2);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
-.progress-bar-wrap{width:100%;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin:12px 0}
-.progress-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .15s;width:0}
-.progress-text{font-size:12px;color:var(--text-muted);text-align:center}
-.credential-preview{background:#fff;border-radius:12px;border:2px solid var(--primary);padding:20px;text-align:center;max-width:320px;margin:0 auto;box-shadow:var(--shadow-md)}
-.credential-header{background:linear-gradient(135deg,var(--primary),var(--primary-mid));color:#fff;padding:10px;border-radius:8px 8px 0 0;margin:-20px -20px 16px;font-size:13px;font-weight:700;letter-spacing:.5px}
-.template-info{background:var(--primary-lighter);border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--primary);display:flex;align-items:flex-start;gap:10px}
-.template-info-icon{font-size:20px;flex-shrink:0}
+.scan-line{position:absolute;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);top:50%;transform:translateY(-50%);animation:scanAnim 2s linear infinite;opacity:.7}
+@keyframes scanAnim{0%,100%{top:15%}50%{top:85%}}
+.method-selector{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.method-btn{flex:1;min-width:110px;padding:11px 14px;background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all var(--tr);font-size:13px;font-weight:600;color:var(--text-secondary)}
+.method-btn:hover{border-color:var(--accent);background:var(--primary-lighter)}
+.method-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 10px var(--accent-glow)}
+.method-icon{font-size:24px}
+.time-display-card{background:linear-gradient(135deg,var(--primary-light),var(--accent));color:#fff;border-radius:var(--radius);padding:26px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow-md)}
+.time-display-time{font-size:52px;font-weight:800;letter-spacing:-1px;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.time-display-date{font-size:15px;opacity:.85;margin-bottom:10px;font-weight:500}
+.time-display-status{margin-top:12px;padding:10px 16px;background:rgba(255,255,255,.15);border-radius:var(--radius-xs);font-size:14px;font-weight:600;backdrop-filter:blur(10px)}
+.status-before{background:rgba(251,191,36,.2);border:1px solid rgba(251,191,36,.3)}
+.status-ontime{background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.3)}
+.status-late{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3)}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:16px}
+.qr-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;transition:transform var(--tr),box-shadow var(--tr)}
+.qr-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.qr-code-display{width:100%;aspect-ratio:1;background:#fff;border-radius:var(--radius-xs);margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.qr-code-display canvas{max-width:100%;height:auto}
+.qr-info{font-size:12px}
+.qr-info-name{font-weight:700;margin-bottom:2px;color:var(--text);word-break:break-word}
+.qr-info-meta{color:var(--text-muted);font-size:11px}
+.toast-container{position:fixed;top:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--card);border-radius:var(--radius-sm);padding:14px 18px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;min-width:240px;max-width:360px;animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--border);pointer-events:auto}
+@keyframes toastIn{from{opacity:0;transform:translateX(100%)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(100%)}}
+.toast.removing{animation:toastOut .3s forwards}
+.toast-icon{font-size:20px;flex-shrink:0}
+.toast-content{flex:1;font-size:13px;font-weight:500}
+.toast-success{border-left:4px solid var(--success)}.toast-success .toast-icon{color:var(--success)}
+.toast-warning{border-left:4px solid var(--warning)}.toast-warning .toast-icon{color:var(--warning)}
+.toast-error{border-left:4px solid var(--danger)}.toast-error .toast-icon{color:var(--danger)}
+.toast-info{border-left:4px solid var(--accent)}.toast-info .toast-icon{color:var(--accent)}
+.drop-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:30px;text-align:center;background:var(--bg);transition:all var(--tr);cursor:pointer}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:var(--accent-glow)}
+.drop-zone-icon{font-size:42px;margin-bottom:10px;color:var(--text-muted)}
+.drop-zone-text{font-size:14px;color:var(--text-secondary);font-weight:500}
+.drop-zone-hint{font-size:12px;color:var(--text-muted);margin-top:6px}
+.filters-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.alert{padding:14px 16px;border-radius:var(--radius-sm);margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;font-size:13px}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-info{background:var(--primary-lighter);color:var(--primary);border:1px solid #bfdbfe}
+.alert-success{background:var(--success-bg);color:#065f46;border:1px solid #a7f3d0}
+.alert-warning{background:var(--warning-bg);color:#92400e;border:1px solid #fde68a}
+.alert-danger{background:var(--danger-bg);color:#991b1b;border:1px solid #fca5a5}
 @media(max-width:768px){
-  .header-inner{flex-direction:column;align-items:flex-start;gap:8px}
-  
-  
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .filters-row{grid-template-columns:1fr}
-  .time-display-clock{font-size:38px}
-  .btn-group{flex-direction:column}
-  .btn-group .btn{width:100%;justify-content:center}
-  .method-tabs{flex-direction:column;gap:6px}
-  .nav-tab{padding:12px 14px;font-size:12px}
-  .nav-tabs{position:relative;top:auto}
+.app-title{font-size:18px}.app-subtitle{font-size:10px}
+.nav-tab{padding:12px 14px;font-size:12px;gap:5px}.tab-icon{font-size:15px}
+.main-content{padding:14px}
+.card{padding:16px;margin-bottom:12px}
+.card-title{font-size:15px}
+.btn{padding:8px 13px;font-size:12px}
+.btn-sm{padding:5px 9px;font-size:11px}
+.form-row{grid-template-columns:1fr}
+.time-display-time{font-size:38px}
+.time-display-date{font-size:13px}
+.qr-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.modal{max-width:96%;margin:10px}
+.table-wrapper{margin:0 -16px;padding:0 16px}
+th,td{padding:9px 8px;font-size:12px}
+.toast-container{right:10px;left:10px}
+.toast{min-width:auto;max-width:none}
 }
-@media(max-width:480px){.main-content{padding:12px}.card{padding:16px}.time-display-clock{font-size:32px}}
+@media print{
+.app-header,.nav-tabs,.btn,.card-header .btn-group,.modal-overlay{display:none!important}
+.card{box-shadow:none;page-break-inside:avoid}
+body{background:#fff}
+}
+
+/* NUEVOS ESTILOS PARA MODAL DE IMPORTACIÓN */
+.import-options {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.import-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.import-option:hover {
+  border-color: var(--accent);
+  background: var(--primary-lighter);
+}
+
+.import-option.selected {
+  border-color: var(--accent);
+  background: var(--primary-lighter);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.import-option input[type="radio"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.import-option-content {
+  flex: 1;
+}
+
+.import-option-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.import-option-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.import-preview {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.import-preview-title {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.import-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.import-stat {
+  background: var(--card);
+  padding: 12px;
+  border-radius: var(--radius-xs);
+  text-align: center;
+}
+
+.import-stat-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.import-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
 </style>
 </head>
 <body>
+
 <header class="app-header">
-  <div class="header-inner">
-    <div class="app-logo">
-      <div class="logo-icon">📋</div>
-      <div><div class="app-title">AsistenciaQR</div><div class="app-subtitle">Control de Asistencia Escolar</div></div>
-    </div>
-    
-  </div>
+<div class="header-inner">
+<div class="app-logo">
+<div class="logo-icon">📋</div>
+<div>
+<div class="app-title">AsistenciaQR</div>
+<div class="app-subtitle">Control Escolar</div>
+</div>
+</div>
+<div class="header-right"></div>
+</div>
 </header>
+
 <nav class="nav-tabs">
-  <div class="nav-tab active" data-tab="attendance"><span class="tab-icon">✓</span>Asistencia</div>
-  <div class="nav-tab" data-tab="students"><span class="tab-icon">👥</span>Alumnos</div>
-  <div class="nav-tab" data-tab="absences"><span class="tab-icon">📊</span>Reportes</div>
-  <div class="nav-tab" data-tab="settings"><span class="tab-icon">⚙️</span>Configuración</div>
+<div class="nav-tab active" data-tab="attendance"><span class="tab-icon">✅</span><span>Asistencia</span></div>
+<div class="nav-tab" data-tab="absences"><span class="tab-icon">📊</span><span>Reportes</span></div>
+<div class="nav-tab" data-tab="students"><span class="tab-icon">👥</span><span>Alumnos</span></div>
+<div class="nav-tab" data-tab="settings"><span class="tab-icon">⚙️</span><span>Configuración</span></div>
 </nav>
+
 <main class="main-content">
 
 <!-- PANEL: ASISTENCIA -->
-<div id="panel-attendance" class="tab-panel active">
-  <div class="time-display-card">
-    <div class="time-display-clock" id="bigClock">00:00:00</div>
-    <div class="time-display-date" id="bigDate">Cargando...</div>
-    <div id="timeStatusBig"></div>
-  </div>
-  <div class="method-tabs">
-    <div class="method-tab active" data-method="camera" onclick="selectMethod('camera')">📷 Escanear QR</div>
-    <div class="method-tab" data-method="image" onclick="selectMethod('image')">🖼️ Desde Imagen</div>
-    <div class="method-tab" data-method="manual" onclick="selectMethod('manual')">✍️ Manual</div>
-  </div>
-  <!-- CÁMARA -->
-  <div id="method-camera" class="method-content active">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">📷 Escaneo con Cámara</div>
-        <button class="btn btn-accent btn-sm" onclick="toggleCamera()" id="cameraToggleBtn"><span id="cameraToggleText">▶ Iniciar Cámara</span></button>
-      </div>
-      <div class="camera-select-bar" id="cameraSelectBar" style="display:none">
-        <label>📹 Cámara:</label>
-        <select id="cameraSelect" class="form-select" style="flex:1" onchange="switchCamera()"></select>
-      </div>
-      <div id="cameraContainer" style="display:none">
-        <div class="video-container">
-          <video id="qrVideo" autoplay playsinline muted></video>
-          <div class="scan-overlay"><div class="scan-frame"><div class="scan-corner tl"></div><div class="scan-corner tr"></div><div class="scan-corner bl"></div><div class="scan-corner br"></div><div class="scan-line"></div></div></div>
-          <div class="camera-status" id="cameraStatus"><div class="camera-status-dot"></div><span>Inicializando...</span></div>
-        </div>
-      </div>
-      <div id="scanResult"></div>
-    </div>
-  </div>
-  <!-- IMAGEN -->
-  <div id="method-image" class="method-content">
-    <div class="card">
-      <div class="card-header"><div class="card-title">🖼️ Escanear desde Imagen</div></div>
-      <div class="btn-group" style="margin-bottom:16px">
-        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📁 Seleccionar Archivo</button>
-        <button class="btn btn-accent" onclick="document.getElementById('captureInput').click()">📸 Tomar Foto</button>
-      </div>
-      <input type="file" id="fileInput" accept="image/*" style="display:none">
-      <input type="file" id="captureInput" accept="image/*" capture="environment" style="display:none">
-      <div id="imageResult"></div>
-    </div>
-  </div>
-  <!-- MANUAL -->
-  <div id="method-manual" class="method-content">
-    <div class="card">
-      <div class="card-header"><div class="card-title">✍️ Registro Manual</div></div>
-      <div class="filters-row">
-        <div class="form-group"><label class="form-label">Buscar por Nombre</label><input type="text" id="manualNameSearch" class="form-input" placeholder="Escribe el nombre..." oninput="filterManualStudents()"></div>
-        <div class="form-group"><label class="form-label">Filtrar por Grado</label><select id="manualGradeFilter" class="form-select" onchange="filterManualStudents()"><option value="">Todos</option></select></div>
-        <div class="form-group"><label class="form-label">Alumno</label><select id="manualStudentSelect" class="form-select"><option value="">Seleccione...</option></select></div>
-        <div class="form-group"><label class="form-label">Estado</label><select id="manualStatus" class="form-select"><option value="ontime">✅ A tiempo</option><option value="late">⏰ Retardo</option></select></div>
-      </div>
-      <button class="btn btn-success btn-lg" style="width:100%" onclick="registerManual()">✓ Registrar Asistencia</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">📋 Registros de Hoy</div><button class="btn btn-outline btn-sm" onclick="renderToday()">🔄</button></div>
-    <div class="stats-grid" id="statsToday"></div>
-    <div class="table-wrapper"><table id="tableToday"><thead><tr><th>Hora</th><th>Nombre</th><th>Grupo</th><th>Matrícula</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
-  </div>
+<section id="panel-attendance" class="tab-panel active">
+<div class="time-display-card">
+<div class="time-display-time" id="bigClock">00:00:00</div>
+<div class="time-display-date" id="bigDate">Cargando...</div>
+<div id="timeStatusBig"></div>
 </div>
 
-<!-- PANEL: ALUMNOS -->
-<div id="panel-students" class="tab-panel">
-  <div class="card">
-    <div class="card-header"><div class="card-title">👥 Gestión de Alumnos</div></div>
-    <div class="btn-group" style="margin-bottom:16px">
-      <button class="btn btn-primary" onclick="openAddStudent()">➕ Agregar Alumno</button>
-      <button class="btn btn-accent" onclick="openModal('modalImport')">📤 Importar CSV</button>
-      <button class="btn btn-outline" onclick="downloadCSVTemplate()">📋 Plantilla CSV</button>
-      <button class="btn btn-success" onclick="exportStudentsCSV()">💾 Exportar</button>
-      <button class="btn btn-primary" onclick="generateAllQR()">📱 Generar Todos QR (ZIP)</button>
-    </div>
-    <div style="margin-bottom:16px"><input type="text" id="studentSearch" class="form-input" placeholder="🔍 Buscar por nombre, matrícula o grupo..." oninput="renderStudents()"></div>
-    <div class="table-wrapper"><table id="tableStudents"><thead><tr><th>Nombre</th><th>Apellidos</th><th>Grupo</th><th>Matrícula</th><th>Tutor</th><th>Teléfono</th><th>QR</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
-    <div id="studentCount" style="margin-top:10px;font-size:12px;color:var(--text-muted);text-align:right"></div>
-  </div>
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">📷 Escanear QR</h2>
 </div>
+<div class="method-selector">
+<div class="method-btn active" data-method="camera" onclick="selectMethod('camera')">
+<span class="method-icon">📷</span>
+<span>Cámara en Vivo</span>
+</div>
+<div class="method-btn" data-method="file" onclick="selectMethod('file')">
+<span class="method-icon">🖼️</span>
+<span>Subir Imagen</span>
+</div>
+<div class="method-btn" data-method="capture" onclick="selectMethod('capture')">
+<span class="method-icon">📸</span>
+<span>Capturar Foto</span>
+</div>
+</div>
+
+<div id="cameraSection" class="scan-section">
+<div class="video-container">
+<video id="qrVideo" playsinline></video>
+<div class="scan-overlay">
+<div class="scan-frame">
+<div class="scan-corner tl"></div>
+<div class="scan-corner tr"></div>
+<div class="scan-corner bl"></div>
+<div class="scan-corner br"></div>
+<div class="scan-line"></div>
+</div>
+</div>
+</div>
+<div class="btn-group">
+<button class="btn btn-accent" onclick="startCamera()" id="startBtn">▶️ Iniciar Cámara</button>
+<button class="btn btn-danger" onclick="stopCamera()" id="stopBtn" style="display:none">⏹️ Detener</button>
+</div>
+</div>
+
+<div id="fileSection" class="scan-section" style="display:none">
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+<div class="drop-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
+<div class="drop-zone-icon">🖼️</div>
+<div class="drop-zone-text">Haz clic o arrastra una imagen</div>
+<div class="drop-zone-hint">Formatos: JPG, PNG, WebP</div>
+</div>
+</div>
+
+<div id="captureSection" class="scan-section" style="display:none">
+<input type="file" id="captureInput" accept="image/*" capture="environment" style="display:none">
+<button class="btn btn-accent btn-lg" onclick="document.getElementById('captureInput').click()" style="width:100%">📸 Abrir Cámara</button>
+</div>
+
+<div id="scanResults"></div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">📅 Asistencia de Hoy</h2>
+<div class="btn-group">
+<button class="btn btn-sm btn-outline" onclick="renderToday()">🔄 Actualizar</button>
+</div>
+</div>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-number" style="color:var(--success)" id="statPresent">0</div>
+<div class="stat-label">Presentes</div>
+</div>
+<div class="stat-card">
+<div class="stat-number" style="color:var(--warning)" id="statLate">0</div>
+<div class="stat-label">Retardos</div>
+</div>
+<div class="stat-card">
+<div class="stat-number" style="color:var(--danger)" id="statAbsent">0</div>
+<div class="stat-label">Ausentes</div>
+</div>
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Alumno</th><th>Grupo</th><th>Estado</th><th>Hora</th><th>Acciones</th></tr></thead>
+<tbody id="todayTable"></tbody>
+</table>
+</div>
+</div>
+</section>
 
 <!-- PANEL: REPORTES -->
-<div id="panel-absences" class="tab-panel">
-  <div class="card">
-    <div class="card-header"><div class="card-title">📊 Reportes de Asistencia</div></div>
-    <div class="method-tabs">
-      <div class="method-tab active" data-abs="absences" onclick="selectAbsType('absences')">📛 Inasistencias</div>
-      <div class="method-tab" data-abs="tardiness" onclick="selectAbsType('tardiness')">⏰ Retardos</div>
-      <div class="method-tab" data-abs="individual" onclick="selectAbsType('individual')">👤 Individual</div>
-    </div>
-    <div class="filters-row">
-      <div class="form-group"><label class="form-label">Buscar Nombre</label><input type="text" id="filterName" class="form-input" placeholder="Nombre del alumno..." oninput="renderAbsences()"></div>
-      <div class="form-group"><label class="form-label">Grado</label><select id="filterGrade" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
-      <div class="form-group"><label class="form-label">Fecha</label><input type="date" id="filterDate" class="form-input" onchange="renderAbsences()"></div>
-      <div class="form-group"><label class="form-label">Mes</label><input type="month" id="filterMonth" class="form-input" onchange="renderAbsences()"></div>
-      <div class="form-group" id="filterStudentGroup"><label class="form-label">Alumno</label><select id="filterStudent" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
-    </div>
-    <div class="btn-group">
-      <button class="btn btn-success" onclick="exportAbsences()">📥 Exportar Reporte CSV</button>
-      <button class="btn btn-outline" onclick="clearFilters()">🗑️ Limpiar Filtros</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title" id="absencesTitle">Resultados</div></div>
-    <div id="absencesStats"></div>
-    <div class="table-wrapper"><table id="tableAbsences"><thead><tr><th>Nombre</th><th>Grupo</th><th>Matrícula</th><th>Fecha</th><th>Tipo</th><th>Hora</th><th>Justificada</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
-  </div>
+<section id="panel-absences" class="tab-panel">
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">🔍 Filtrar Reportes</h2>
 </div>
+<div class="filters-row">
+<div class="form-group">
+<label class="form-label">Fecha</label>
+<input type="date" class="form-input" id="filterDate" onchange="renderAbsences()">
+</div>
+<div class="form-group">
+<label class="form-label">Mes</label>
+<input type="month" class="form-input" id="filterMonth" onchange="renderAbsences()">
+</div>
+<div class="form-group">
+<label class="form-label">Alumno</label>
+<select class="form-select" id="filterStudent" onchange="renderAbsences()"><option value="">Todos</option></select>
+</div>
+<div class="form-group">
+<label class="form-label">Grupo</label>
+<select class="form-select" id="filterGrade" onchange="renderAbsences()"><option value="">Todos</option></select>
+</div>
+</div>
+<div class="btn-group">
+<button class="btn btn-outline" onclick="document.getElementById('filterDate').value='';document.getElementById('filterMonth').value='';document.getElementById('filterStudent').value='';document.getElementById('filterGrade').value='';renderAbsences()">🔄 Limpiar Filtros</button>
+<button class="btn btn-accent" onclick="exportReport('absences')">💾 Exportar Inasistencias</button>
+<button class="btn btn-warning" onclick="exportReport('tardiness')">💾 Exportar Retardos</button>
+<button class="btn btn-primary" onclick="exportReport('individual')">💾 Exportar Individual</button>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">📊 Inasistencias</h2>
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Alumno</th><th>Grupo</th><th>Matrícula</th><th>Fecha</th><th>Justificada</th><th>Acciones</th></tr></thead>
+<tbody id="absencesTable"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">⏰ Retardos</h2>
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Alumno</th><th>Grupo</th><th>Matrícula</th><th>Fecha</th><th>Hora</th><th>Justificada</th><th>Acciones</th></tr></thead>
+<tbody id="tardinessTable"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- PANEL: ALUMNOS -->
+<section id="panel-students" class="tab-panel">
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">➕ Agregar Alumno</h2>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Nombre(s)</label>
+<input type="text" class="form-input" id="studentName" placeholder="Ej: Juan">
+</div>
+<div class="form-group">
+<label class="form-label">Apellido Paterno</label>
+<input type="text" class="form-input" id="studentLastName1" placeholder="Ej: Pérez">
+</div>
+<div class="form-group">
+<label class="form-label">Apellido Materno</label>
+<input type="text" class="form-input" id="studentLastName2" placeholder="Ej: García">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Matrícula</label>
+<input type="text" class="form-input" id="studentMatricula" placeholder="Ej: 2024001">
+</div>
+<div class="form-group">
+<label class="form-label">Grupo</label>
+<input type="text" class="form-input" id="studentGrupo" placeholder="Ej: 1-A">
+</div>
+<div class="form-group">
+<label class="form-label">Teléfono Tutor</label>
+<input type="tel" class="form-input" id="studentPhone" placeholder="Ej: 8112345678">
+</div>
+</div>
+<button class="btn btn-success" onclick="addStudent()">✅ Agregar Alumno</button>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">👥 Lista de Alumnos</h2>
+<div class="btn-group">
+<button class="btn btn-sm btn-outline" onclick="document.getElementById('csvInput').click()">📥 Importar Respaldo JSON</button>
+<input type="file" id="csvInput" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+<button class="btn btn-sm btn-accent" onclick="downloadAllQR()">📦 Descargar Todos los QR</button>
+</div>
+</div>
+<div class="form-group">
+<input type="text" class="form-input" id="filterName" placeholder="🔍 Buscar por nombre..." oninput="renderStudents()">
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Nombre</th><th>Matrícula</th><th>Grupo</th><th>Teléfono</th><th>QR</th><th>Acciones</th></tr></thead>
+<tbody id="studentsTable"></tbody>
+</table>
+</div>
+</div>
+</section>
 
 <!-- PANEL: CONFIGURACIÓN -->
-<div id="panel-settings" class="tab-panel">
-  <div class="card">
-    <div class="card-header"><div class="card-title">⚙️ Configuración General</div></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Hora de Inicio de Clases</label><input type="time" id="settingStartTime" class="form-input" value="07:30"></div>
-      <div class="form-group"><label class="form-label">Minutos para Retardo</label><input type="number" id="settingLateMinutes" class="form-input" min="1" max="60" value="5"><div style="font-size:11px;color:var(--text-muted);margin-top:4px">Después de este tiempo = Retardo</div></div>
-      <div class="form-group"><label class="form-label">Inicio del Periodo</label><input type="date" id="settingSemesterStart" class="form-input"></div>
-    </div>
-    <button class="btn btn-primary btn-lg" onclick="saveSettings()" style="margin-top:8px">💾 Guardar Configuración</button>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">📅 Días Festivos / No Laborables</div><button class="btn btn-primary btn-sm" onclick="openModal('modalHoliday')">➕ Agregar</button></div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Los días festivos no cuentan como falta.</div>
-    <div id="holidaysList"></div>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">💾 Respaldo de Datos</div></div>
-    <div class="btn-group">
-      <button class="btn btn-success" onclick="exportBackup()">📦 Exportar Respaldo</button>
-      <button class="btn btn-accent" onclick="document.getElementById('backupInput').click()">📥 Restaurar</button>
-      <input type="file" id="backupInput" accept=".json" style="display:none" onchange="importBackup(event)">
-    </div>
-    <div style="font-size:12px;color:var(--text-muted);margin-top:8px">Incluye alumnos, asistencia, justificaciones, festivos y config.</div>
-  </div>
-  <div class="card" style="border-color:var(--danger)">
-    <div class="card-header"><div class="card-title" style="color:var(--danger)">⚠️ Zona de Peligro</div></div>
-    <div class="btn-group">
-      <button class="btn btn-warning" onclick="resetAttendance()">🗑️ Resetear Asistencia</button>
-      <button class="btn btn-danger" onclick="resetAll()">⚠️ Borrar Todo</button>
-    </div>
-  </div>
+<section id="panel-settings" class="tab-panel">
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">🕐 Horarios</h2>
 </div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Hora de Entrada</label>
+<input type="time" class="form-input" id="settingStartTime" onchange="saveSettings()">
+</div>
+<div class="form-group">
+<label class="form-label">Minutos de Tolerancia</label>
+<input type="number" class="form-input" id="settingLateMinutes" min="0" max="30" onchange="saveSettings()">
+</div>
+<div class="form-group">
+<label class="form-label">Inicio del Semestre</label>
+<input type="date" class="form-input" id="settingSemesterStart" onchange="saveSettings()">
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">📅 Días Festivos</h2>
+<button class="btn btn-sm btn-success" onclick="openModal('modalHoliday')">➕ Agregar</button>
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Fecha</th><th>Descripción</th><th>Acciones</th></tr></thead>
+<tbody id="holidaysTable"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">💾 Respaldo de Datos</h2>
+</div>
+<div class="alert alert-info">
+<span class="alert-icon">ℹ️</span>
+<div>
+<strong>Sincronización entre dispositivos:</strong><br>
+1. En el dispositivo actual: haz clic en "Exportar Respaldo" y guarda el archivo JSON<br>
+2. En el otro dispositivo: haz clic en "Importar Respaldo" y selecciona el archivo<br>
+3. Elige "Fusionar datos" para conservar los registros de ambos dispositivos
+</div>
+</div>
+<div class="btn-group">
+<button class="btn btn-accent" onclick="exportBackup()">📤 Exportar Respaldo</button>
+<button class="btn btn-primary" onclick="document.getElementById('importBackupInput').click()">📥 Importar Respaldo</button>
+<input type="file" id="importBackupInput" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<h2 class="card-title">⚠️ Zona de Peligro</h2>
+</div>
+<div class="alert alert-danger">
+<span class="alert-icon">🚨</span>
+<div><strong>Precaución:</strong> Estas acciones son irreversibles.</div>
+</div>
+<div class="btn-group">
+<button class="btn btn-warning" onclick="resetAttendance()">🔄 Resetear Asistencias</button>
+<button class="btn btn-danger" onclick="resetAll()">🗑️ Borrar Todo</button>
+</div>
+</div>
+</section>
+
 </main>
 
-<!-- MODALES -->
-<div id="modalStudent" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title" id="studentModalTitle">➕ Agregar Alumno</div><button class="modal-close" onclick="closeModal('modalStudent')">✕</button></div>
-  <div class="modal-body">
-    <input type="hidden" id="studentId">
-    <div class="form-row"><div class="form-group"><label class="form-label">Nombre(s) *</label><input type="text" id="studentFirstName" class="form-input" placeholder="Ej: Juan Carlos"></div><div class="form-group"><label class="form-label">Apellidos *</label><input type="text" id="studentLastName" class="form-input" placeholder="Ej: García López"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Grupo / Grado *</label><input type="text" id="studentGrupo" class="form-input" placeholder="Ej: 3A"></div><div class="form-group"><label class="form-label">Matrícula *</label><input type="text" id="studentMatricula" class="form-input" placeholder="Ej: 2024001"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Nombre del Tutor</label><input type="text" id="studentTutor" class="form-input" placeholder="Ej: María García"></div><div class="form-group"><label class="form-label">Teléfono del Tutor</label><input type="tel" id="studentPhone" class="form-input" placeholder="Ej: 8661234567"></div></div>
-  </div>
-  <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalStudent')">Cancelar</button><button class="btn btn-primary" onclick="saveStudent()">💾 Guardar</button></div>
-</div></div>
+<!-- MODAL: EDITAR ALUMNO -->
+<div class="modal-overlay" id="modalEditStudent">
+<div class="modal">
+<div class="modal-header">
+<h3 class="modal-title">✏️ Editar Alumno</h3>
+<button class="modal-close" onclick="closeModal('modalEditStudent')">✕</button>
+</div>
+<div class="modal-body">
+<input type="hidden" id="editStudentId">
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Nombre(s)</label>
+<input type="text" class="form-input" id="editStudentName">
+</div>
+<div class="form-group">
+<label class="form-label">Apellido Paterno</label>
+<input type="text" class="form-input" id="editStudentLastName1">
+</div>
+<div class="form-group">
+<label class="form-label">Apellido Materno</label>
+<input type="text" class="form-input" id="editStudentLastName2">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">Matrícula</label>
+<input type="text" class="form-input" id="editStudentMatricula">
+</div>
+<div class="form-group">
+<label class="form-label">Grupo</label>
+<input type="text" class="form-input" id="editStudentGrupo">
+</div>
+<div class="form-group">
+<label class="form-label">Teléfono Tutor</label>
+<input type="tel" class="form-input" id="editStudentPhone">
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-outline" onclick="closeModal('modalEditStudent')">Cancelar</button>
+<button class="btn btn-success" onclick="saveEditStudent()">💾 Guardar Cambios</button>
+</div>
+</div>
+</div>
 
-<div id="modalQR" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title">📱 Credencial QR</div><button class="modal-close" onclick="closeModal('modalQR')">✕</button></div>
-  <div class="modal-body">
-    <div class="credential-preview" id="credentialPreview">
-      <div class="credential-header">CREDENCIAL DE ASISTENCIA ESCOLAR</div>
-      <div id="qrcode" style="display:flex;justify-content:center;margin-bottom:12px"></div>
-      <div id="qrStudentName" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px"></div>
-      <div id="qrStudentGrade" style="font-size:13px;color:var(--text-secondary);margin-bottom:4px"></div>
-      <div id="qrStudentMat" style="font-size:12px;color:var(--text-muted)"></div>
-    </div>
-  </div>
-  <div class="modal-footer"><button class="btn btn-primary" onclick="downloadCredentialQR()">💾 Descargar Credencial</button><button class="btn btn-outline" onclick="closeModal('modalQR')">Cerrar</button></div>
-</div></div>
+<!-- MODAL: VER QR -->
+<div class="modal-overlay" id="modalViewQR">
+<div class="modal">
+<div class="modal-header">
+<h3 class="modal-title">📱 Código QR</h3>
+<button class="modal-close" onclick="closeModal('modalViewQR')">✕</button>
+</div>
+<div class="modal-body" style="text-align:center">
+<div id="qrCodeDisplay" style="display:inline-block"></div>
+<div style="margin-top:12px;font-size:14px;font-weight:600" id="qrStudentName"></div>
+<div style="font-size:12px;color:var(--text-muted);margin-top:4px" id="qrStudentMeta"></div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-accent" onclick="downloadCurrentQR()">📥 Descargar</button>
+<button class="btn btn-outline" onclick="closeModal('modalViewQR')">Cerrar</button>
+</div>
+</div>
+</div>
 
-<div id="modalImport" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title">📤 Importar Alumnos CSV</div><button class="modal-close" onclick="closeModal('modalImport')">✕</button></div>
-  <div class="modal-body">
-    <div class="template-info"><span class="template-info-icon">💡</span><div><strong>Columnas:</strong> nombre, apellidos, grupo, matricula, tutor, telefono. La columna <code>id</code> es opcional.<br><br><button class="btn btn-outline btn-sm" onclick="downloadCSVTemplate()">📋 Descargar Plantilla</button></div></div>
-    <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvInput').click()"><div class="drop-zone-icon">📄</div><div class="drop-zone-text">Clic o arrastra archivo CSV aquí</div></div>
-    <input type="file" id="csvInput" accept=".csv,.txt" style="display:none" onchange="importCSV(event)">
-  </div>
-</div></div>
+<!-- MODAL: JUSTIFICAR -->
+<div class="modal-overlay" id="modalJustify">
+<div class="modal">
+<div class="modal-header">
+<h3 class="modal-title">📝 Justificar</h3>
+<button class="modal-close" onclick="closeModal('modalJustify')">✕</button>
+</div>
+<div class="modal-body">
+<input type="hidden" id="justifyStudentId">
+<input type="hidden" id="justifyDate">
+<div class="form-group">
+<label class="form-label">Motivo</label>
+<textarea class="form-textarea" id="justifyReason" rows="4" placeholder="Describe el motivo de la justificación..."></textarea>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-outline" onclick="closeModal('modalJustify')">Cancelar</button>
+<button class="btn btn-success" onclick="saveJustification()">✅ Justificar</button>
+</div>
+</div>
+</div>
 
-<div id="modalJustify" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title">📝 Justificar</div><button class="modal-close" onclick="closeModal('modalJustify')">✕</button></div>
-  <div class="modal-body">
-    <input type="hidden" id="justifyStudentId"><input type="hidden" id="justifyDate">
-    <div id="justifyInfo" style="margin-bottom:14px;padding:14px;background:var(--bg);border-radius:var(--radius-sm);font-size:13px;border:1px solid var(--border)"></div>
-    <div class="form-group"><label class="form-label">Motivo</label><textarea id="justifyReason" class="form-input" rows="4" placeholder="Motivo de la justificación..." style="resize:vertical"></textarea></div>
-  </div>
-  <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalJustify')">Cancelar</button><button class="btn btn-primary" onclick="saveJustify()">💾 Justificar</button></div>
-</div></div>
+<!-- MODAL: AGREGAR FESTIVO -->
+<div class="modal-overlay" id="modalHoliday">
+<div class="modal">
+<div class="modal-header">
+<h3 class="modal-title">📅 Agregar Día Festivo</h3>
+<button class="modal-close" onclick="closeModal('modalHoliday')">✕</button>
+</div>
+<div class="modal-body">
+<div class="form-group">
+<label class="form-label">Fecha</label>
+<input type="date" class="form-input" id="holidayDate">
+</div>
+<div class="form-group">
+<label class="form-label">Descripción</label>
+<input type="text" class="form-input" id="holidayDesc" placeholder="Ej: Día de la Independencia">
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-outline" onclick="closeModal('modalHoliday')">Cancelar</button>
+<button class="btn btn-success" onclick="addHoliday()">✅ Agregar</button>
+</div>
+</div>
+</div>
 
-<div id="modalHoliday" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title">📅 Día Festivo</div><button class="modal-close" onclick="closeModal('modalHoliday')">✕</button></div>
-  <div class="modal-body">
-    <div class="form-group"><label class="form-label">Fecha</label><input type="date" id="holidayDate" class="form-input"></div>
-    <div class="form-group"><label class="form-label">Descripción</label><input type="text" id="holidayName" class="form-input" placeholder="Ej: Día de la Independencia"></div>
-  </div>
-  <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalHoliday')">Cancelar</button><button class="btn btn-primary" onclick="addHoliday()">💾 Guardar</button></div>
-</div></div>
+<!-- MODAL: IMPORTAR RESPALDO -->
+<div class="modal-overlay" id="modalImport">
+<div class="modal">
+<div class="modal-header">
+<h3 class="modal-title">📥 Importar Respaldo</h3>
+<button class="modal-close" onclick="closeModal('modalImport')">✕</button>
+</div>
+<div class="modal-body">
+<div class="alert alert-warning">
+<span class="alert-icon">⚠️</span>
+<div><strong>Importante:</strong> Selecciona cómo quieres importar los datos.</div>
+</div>
 
-<div id="modalConfirm" class="modal-overlay"><div class="modal">
-  <div class="modal-header"><div class="modal-title" id="confirmTitle">Confirmar</div><button class="modal-close" onclick="closeModal('modalConfirm')">✕</button></div>
-  <div class="modal-body"><p id="confirmMessage" style="font-size:14px"></p></div>
-  <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalConfirm')">Cancelar</button><button class="btn btn-danger" id="confirmBtn">Confirmar</button></div>
-</div></div>
+<div class="import-options">
+<label class="import-option" for="importMerge">
+<input type="radio" name="importMode" id="importMerge" value="merge" checked>
+<div class="import-option-content">
+<div class="import-option-title">✨ Fusionar datos (Recomendado)</div>
+<div class="import-option-desc">
+Combina los datos del archivo con los existentes. Los alumnos nuevos se agregan, los registros de asistencia se combinan. ¡Los QR codes se mantienen válidos!
+</div>
+</div>
+</label>
 
-<div id="modalProgress" class="modal-overlay"><div class="modal" style="max-width:400px">
-  <div class="modal-header"><div class="modal-title" id="progressTitle">Procesando...</div></div>
-  <div class="modal-body" style="text-align:center"><div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div><div class="progress-text" id="progressText">0%</div></div>
-</div></div>
+<label class="import-option" for="importReplace">
+<input type="radio" name="importMode" id="importReplace" value="replace">
+<div class="import-option-content">
+<div class="import-option-title">🔄 Reemplazar todo</div>
+<div class="import-option-desc">
+⚠️ BORRA todos los datos actuales y los reemplaza con los del archivo. Usa esto solo si quieres empezar desde cero con los datos del archivo.
+</div>
+</div>
+</label>
+</div>
+
+<div class="import-preview" id="importPreview" style="display:none">
+<div class="import-preview-title">📊 Vista previa de importación</div>
+<div class="import-stats">
+<div class="import-stat">
+<div class="import-stat-number" id="previewStudents">0</div>
+<div class="import-stat-label">Alumnos</div>
+</div>
+<div class="import-stat">
+<div class="import-stat-number" id="previewAttendance">0</div>
+<div class="import-stat-label">Asistencias</div>
+</div>
+<div class="import-stat">
+<div class="import-stat-number" id="previewJustifications">0</div>
+<div class="import-stat-label">Justificaciones</div>
+</div>
+<div class="import-stat">
+<div class="import-stat-number" id="previewHolidays">0</div>
+<div class="import-stat-label">Festivos</div>
+</div>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-outline" onclick="closeModal('modalImport')">Cancelar</button>
+<button class="btn btn-success" onclick="confirmImport()" id="btnConfirmImport">✅ Importar</button>
+</div>
+</div>
+</div>
 
 <div class="toast-container" id="toastContainer"></div>
 
@@ -394,742 +757,516 @@ tr:hover td{background:var(--primary-lighter)}
 // ============================================================
 // STATE
 // ============================================================
-const S={students:[],attendance:[],justifications:[],holidays:[],settings:{startTime:'07:30',lateMinutes:5,semesterStart:''},absType:'absences',cameraStream:null,cameraActive:false,scanningActive:false,cameras:[],currentQRStudent:null};
+let S={students:[],attendance:[],justifications:[],holidays:[],settings:{startTime:'07:30',lateMinutes:5,semesterStart:''}};
+let scanStream=null,scanInterval=null,currentQRStudent=null;
+let pendingImportData = null;
 
 // ============================================================
-// UTILS
+// HELPERS
 // ============================================================
-function today(){return new Date().toISOString().split('T')[0]}
-function now(){return new Date().toLocaleTimeString('es-MX',{hour12:false})}
-function fmtDate(d){try{return new Date(d+'T12:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return d}}
+function today(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`}
+function time24(){const d=new Date();return d.toTimeString().slice(0,5)}
 function t2m(t){const[h,m]=t.split(':').map(Number);return h*60+m}
-function fullName(s){return s.nombre+' '+s.apellidos}
-function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8)}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-
+function fullName(s){return `${s.name} ${s.lastName1} ${s.lastName2}`.trim()}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
 function toast(msg,type='success'){
-  const c=document.getElementById('toastContainer');
-  const t=document.createElement('div');
-  t.className='toast '+type;
-  t.innerHTML=(type==='success'?'✓':type==='error'?'✕':'ℹ')+' '+msg;
-  c.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(12px)';setTimeout(()=>t.remove(),300)},3000);
+  const c=document.getElementById('toastContainer'),t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  const icons={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+  t.innerHTML=`<span class="toast-icon">${icons[type]||'✅'}</span><div class="toast-content">${msg}</div>`;
+  c.appendChild(t);setTimeout(()=>{t.classList.add('removing');setTimeout(()=>c.removeChild(t),300)},3000);
 }
 function openModal(id){document.getElementById(id).classList.add('active')}
 function closeModal(id){document.getElementById(id).classList.remove('active')}
-function confirm_(title,msg,cb){
-  document.getElementById('confirmTitle').textContent=title;
-  document.getElementById('confirmMessage').innerHTML=msg;
-  document.getElementById('confirmBtn').onclick=()=>{cb();closeModal('modalConfirm')};
-  openModal('modalConfirm');
-}
+function confirm_(title,msg,onYes){if(confirm(msg))onYes()}
 
 // ============================================================
-// PERSISTENCE
+// STORAGE
 // ============================================================
-function loadData(){
-  try{
-    S.students=JSON.parse(localStorage.getItem('aqr_students')||'[]');
-    S.attendance=JSON.parse(localStorage.getItem('aqr_attendance')||'[]');
-    S.justifications=JSON.parse(localStorage.getItem('aqr_justifications')||'[]');
-    S.holidays=JSON.parse(localStorage.getItem('aqr_holidays')||'[]');
-    const st=localStorage.getItem('aqr_settings');
-    if(st)S.settings={...S.settings,...JSON.parse(st)};
-  }catch(e){console.error('Load error:',e)}
-}
 function saveStudents(){localStorage.setItem('aqr_students',JSON.stringify(S.students))}
 function saveAttendance(){localStorage.setItem('aqr_attendance',JSON.stringify(S.attendance))}
 function saveJustifications(){localStorage.setItem('aqr_justifications',JSON.stringify(S.justifications))}
 function saveHolidaysLS(){localStorage.setItem('aqr_holidays',JSON.stringify(S.holidays))}
 function saveSettings(){
-  S.settings.startTime=document.getElementById('settingStartTime').value||'07:30';
+  S.settings.startTime=document.getElementById('settingStartTime').value;
   S.settings.lateMinutes=parseInt(document.getElementById('settingLateMinutes').value)||5;
-  S.settings.semesterStart=document.getElementById('settingSemesterStart').value;
+  S.settings.semesterStart=document.getElementById('settingSemesterStart').value||'';
   localStorage.setItem('aqr_settings',JSON.stringify(S.settings));
   toast('Configuración guardada');
 }
-
-// ============================================================
-// BACKUP
-// ============================================================
-function exportBackup(){
-  const b={v:2,date:new Date().toISOString(),students:S.students,attendance:S.attendance,justifications:S.justifications,holidays:S.holidays,settings:S.settings};
-  const blob=new Blob([JSON.stringify(b,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='respaldo-asistencia-'+today()+'.json';a.click();
-  toast('Respaldo exportado');
-}
-function importBackup(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    try{
-      const d=JSON.parse(ev.target.result);
-      confirm_('Restaurar','⚠️ Esto reemplazará TODOS los datos. ¿Continuar?',()=>{
-        if(d.students){S.students=d.students;saveStudents()}
-        if(d.attendance){S.attendance=d.attendance;saveAttendance()}
-        if(d.justifications){S.justifications=d.justifications;saveJustifications()}
-        if(d.holidays){S.holidays=d.holidays;saveHolidaysLS()}
-        if(d.settings){S.settings={...S.settings,...d.settings};localStorage.setItem('aqr_settings',JSON.stringify(S.settings))}
-        refreshAll();toast('Respaldo restaurado');
-      });
-    }catch(err){toast('Archivo inválido','error')}
-  };
-  r.readAsText(f);e.target.value='';
-}
-
-// ============================================================
-// HOLIDAYS
-// ============================================================
-function isHoliday(date){return S.holidays.some(h=>h.date===date)}
-function addHoliday(){
-  const date=document.getElementById('holidayDate').value;
-  const name=document.getElementById('holidayName').value.trim();
-  if(!date||!name){toast('Complete los campos','error');return}
-  if(S.holidays.some(h=>h.date===date)){toast('Ya existe','error');return}
-  S.holidays.push({date,name});S.holidays.sort((a,b)=>a.date.localeCompare(b.date));
-  saveHolidaysLS();closeModal('modalHoliday');renderHolidays();
-  document.getElementById('holidayDate').value='';document.getElementById('holidayName').value='';
-  toast('Día festivo agregado');
-}
-function removeHoliday(date){S.holidays=S.holidays.filter(h=>h.date!==date);saveHolidaysLS();renderHolidays();toast('Eliminado')}
-function renderHolidays(){
-  const c=document.getElementById('holidaysList');
-  if(!S.holidays.length){c.innerHTML='<div class="table-empty" style="padding:20px">Sin días festivos</div>';return}
-  c.innerHTML=S.holidays.map(h=>'<div class="holiday-item"><div><div class="holiday-date">📅 '+fmtDate(h.date)+'</div><div class="holiday-name">'+esc(h.name)+'</div></div><button class="btn btn-danger btn-sm" onclick="removeHoliday(\''+h.date+'\')">🗑️</button></div>').join('');
+function loadData(){
+  try{S.students=JSON.parse(localStorage.getItem('aqr_students')||'[]')}catch(e){S.students=[]}
+  try{S.attendance=JSON.parse(localStorage.getItem('aqr_attendance')||'[]')}catch(e){S.attendance=[]}
+  try{S.justifications=JSON.parse(localStorage.getItem('aqr_justifications')||'[]')}catch(e){S.justifications=[]}
+  try{S.holidays=JSON.parse(localStorage.getItem('aqr_holidays')||'[]')}catch(e){S.holidays=[]}
+  try{const st=localStorage.getItem('aqr_settings');if(st){const p=JSON.parse(st);S.settings={...S.settings,...p}}}catch(e){}
 }
 
 // ============================================================
 // STUDENTS
 // ============================================================
-function renderStudents(){
-  const search=(document.getElementById('studentSearch')||{}).value||'';
-  const sl=search.toLowerCase();
-  let list=S.students;
-  if(sl)list=list.filter(s=>fullName(s).toLowerCase().includes(sl)||s.matricula.toLowerCase().includes(sl)||s.grupo.toLowerCase().includes(sl));
-  const tb=document.querySelector('#tableStudents tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">👥</span>'+(sl?'Sin resultados':'No hay alumnos')+'</td></tr>';document.getElementById('studentCount').textContent='';return}
-  tb.innerHTML=list.map(s=>'<tr><td><strong>'+esc(s.nombre)+'</strong></td><td>'+esc(s.apellidos)+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+esc(s.tutor||'-')+'</td><td>'+esc(s.telefono||'-')+'</td><td><button class="btn btn-accent btn-sm" onclick="showQR(\''+s.id+'\')">📱 QR</button></td><td><div class="btn-group"><button class="btn btn-primary btn-sm" onclick="editStudent(\''+s.id+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStudent(\''+s.id+'\')">🗑️</button></div></td></tr>').join('');
-  document.getElementById('studentCount').textContent=list.length+' de '+S.students.length+' alumnos';
+function addStudent(){
+  const name=document.getElementById('studentName').value.trim();
+  const ln1=document.getElementById('studentLastName1').value.trim();
+  const ln2=document.getElementById('studentLastName2').value.trim();
+  const mat=document.getElementById('studentMatricula').value.trim();
+  const grp=document.getElementById('studentGrupo').value.trim();
+  const phone=document.getElementById('studentPhone').value.trim();
+  if(!name||!ln1||!ln2||!mat||!grp){toast('Completa todos los campos','error');return}
+  if(S.students.find(s=>s.matricula===mat)){toast('Matrícula ya existe','error');return}
+  S.students.push({id:uid(),name,lastName1:ln1,lastName2:ln2,matricula:mat,grupo:grp,phone});
+  saveStudents();renderStudents();updateSelectors();
+  document.getElementById('studentName').value='';
+  document.getElementById('studentLastName1').value='';
+  document.getElementById('studentLastName2').value='';
+  document.getElementById('studentMatricula').value='';
+  document.getElementById('studentGrupo').value='';
+  document.getElementById('studentPhone').value='';
+  toast('Alumno agregado');
 }
-function openAddStudent(){
-  document.getElementById('studentModalTitle').textContent='➕ Agregar Alumno';
-  ['studentId','studentFirstName','studentLastName','studentGrupo','studentMatricula','studentTutor','studentPhone'].forEach(id=>document.getElementById(id).value='');
-  openModal('modalStudent');setTimeout(()=>document.getElementById('studentFirstName').focus(),100);
+function renderStudents(){
+  const fn=(document.getElementById('filterName')||{}).value||'',fnl=fn.toLowerCase();
+  const tb=document.getElementById('studentsTable');
+  const filtered=S.students.filter(s=>!fn||fullName(s).toLowerCase().includes(fnl));
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="6" class="table-empty"><span class="table-empty-icon">📭</span><div>No hay alumnos</div></td></tr>';return}
+  tb.innerHTML=filtered.map(s=>`
+    <tr>
+      <td><strong>${fullName(s)}</strong></td>
+      <td>${s.matricula}</td>
+      <td><span class="badge badge-info">${s.grupo}</span></td>
+      <td>${s.phone||'—'}</td>
+      <td><button class="btn btn-sm btn-accent" onclick="viewQR('${s.id}')">👁️ Ver</button></td>
+      <td>
+        <button class="btn btn-sm btn-primary" onclick="editStudent('${s.id}')">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteStudent('${s.id}')">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
 }
 function editStudent(id){
   const s=S.students.find(x=>x.id===id);if(!s)return;
-  document.getElementById('studentModalTitle').textContent='✏️ Editar Alumno';
-  document.getElementById('studentId').value=s.id;
-  document.getElementById('studentFirstName').value=s.nombre;
-  document.getElementById('studentLastName').value=s.apellidos;
-  document.getElementById('studentGrupo').value=s.grupo;
-  document.getElementById('studentMatricula').value=s.matricula;
-  document.getElementById('studentTutor').value=s.tutor||'';
-  document.getElementById('studentPhone').value=s.telefono||'';
-  openModal('modalStudent');setTimeout(()=>document.getElementById('studentFirstName').focus(),100);
+  document.getElementById('editStudentId').value=id;
+  document.getElementById('editStudentName').value=s.name;
+  document.getElementById('editStudentLastName1').value=s.lastName1;
+  document.getElementById('editStudentLastName2').value=s.lastName2;
+  document.getElementById('editStudentMatricula').value=s.matricula;
+  document.getElementById('editStudentGrupo').value=s.grupo;
+  document.getElementById('editStudentPhone').value=s.phone||'';
+  openModal('modalEditStudent');
 }
-function saveStudent(){
-  const id=document.getElementById('studentId').value;
-  const nombre=document.getElementById('studentFirstName').value.trim();
-  const apellidos=document.getElementById('studentLastName').value.trim();
-  const grupo=document.getElementById('studentGrupo').value.trim();
-  const matricula=document.getElementById('studentMatricula').value.trim();
-  const tutor=document.getElementById('studentTutor').value.trim();
-  const telefono=document.getElementById('studentPhone').value.trim();
-  if(!nombre||!apellidos||!grupo||!matricula){toast('Complete campos obligatorios (*)','error');return}
-  if(id){const s=S.students.find(x=>x.id===id);if(s)Object.assign(s,{nombre,apellidos,grupo,matricula,tutor,telefono});toast('Actualizado');}
-  else{if(S.students.some(s=>s.matricula===matricula)){toast('Matrícula duplicada','error');return}S.students.push({id:genId(),nombre,apellidos,grupo,matricula,tutor,telefono});toast('Alumno agregado');}
-  saveStudents();closeModal('modalStudent');renderStudents();updateSelectors();
+function saveEditStudent(){
+  const id=document.getElementById('editStudentId').value,s=S.students.find(x=>x.id===id);if(!s)return;
+  s.name=document.getElementById('editStudentName').value.trim();
+  s.lastName1=document.getElementById('editStudentLastName1').value.trim();
+  s.lastName2=document.getElementById('editStudentLastName2').value.trim();
+  s.matricula=document.getElementById('editStudentMatricula').value.trim();
+  s.grupo=document.getElementById('editStudentGrupo').value.trim();
+  s.phone=document.getElementById('editStudentPhone').value.trim();
+  saveStudents();renderStudents();updateSelectors();closeModal('modalEditStudent');toast('Alumno actualizado');
 }
-function deleteStudent(id){
+function deleteStudent(id){confirm_('Eliminar','¿Eliminar este alumno?',()=>{S.students=S.students.filter(s=>s.id!==id);saveStudents();renderStudents();updateSelectors();toast('Alumno eliminado','info')})}
+
+// ============================================================
+// QR
+// ============================================================
+function viewQR(id){
   const s=S.students.find(x=>x.id===id);if(!s)return;
-  confirm_('Eliminar','¿Eliminar a <strong>'+esc(fullName(s))+'</strong>?',()=>{
-    S.students=S.students.filter(x=>x.id!==id);
-    S.attendance=S.attendance.filter(a=>a.studentId!==id);
-    S.justifications=S.justifications.filter(j=>j.studentId!==id);
-    saveStudents();saveAttendance();saveJustifications();renderStudents();renderToday();renderAbsences();updateSelectors();toast('Eliminado');
+  currentQRStudent=s;
+  document.getElementById('qrStudentName').textContent=fullName(s);
+  document.getElementById('qrStudentMeta').textContent=`${s.matricula} • ${s.grupo}`;
+  const qc=document.getElementById('qrCodeDisplay');qc.innerHTML='';
+  new QRCode(qc,{text:s.id,width:200,height:200});
+  openModal('modalViewQR');
+}
+function downloadCurrentQR(){
+  if(!currentQRStudent)return;
+  const qc=document.getElementById('qrCodeDisplay'),canvas=qc.querySelector('canvas');
+  if(!canvas)return;
+  canvas.toBlob(b=>{
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download=`QR_${currentQRStudent.matricula}_${currentQRStudent.name}.png`;a.click();
+    toast('QR descargado');
+  });
+}
+function downloadAllQR(){
+  if(!S.students.length){toast('No hay alumnos','error');return}
+  const zip=new JSZip();
+  let done=0;
+  S.students.forEach(s=>{
+    const tmp=document.createElement('div');tmp.style.display='none';document.body.appendChild(tmp);
+    new QRCode(tmp,{text:s.id,width:300,height:300});
+    setTimeout(()=>{
+      const canvas=tmp.querySelector('canvas');
+      if(canvas){canvas.toBlob(b=>{zip.file(`QR_${s.matricula}_${s.name}.png`,b);done++;if(done===S.students.length){zip.generateAsync({type:'blob'}).then(c=>{const a=document.createElement('a');a.href=URL.createObjectURL(c);a.download='QR_Alumnos.zip';a.click();toast('Todos los QR descargados')})}})}
+      document.body.removeChild(tmp);
+    },100);
   });
 }
 
 // ============================================================
-// CSV
-// ============================================================
-function downloadCSVTemplate(){
-  const csv='nombre,apellidos,grupo,matricula,tutor,telefono\nJuan Carlos,García López,3A,2024001,María García,8661234567\nAna,Martínez Ruiz,3B,2024002,Pedro Martínez,8669876543';
-  const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='plantilla_alumnos.csv';a.click();toast('Plantilla descargada');
-}
-function importCSV(e){
-  const f=e.target.files[0];if(!f)return;
-  Papa.parse(f,{header:true,skipEmptyLines:true,complete:r=>{
-    let c=0,sk=0;
-    r.data.forEach(row=>{
-      const nombre=(row.nombre||row.Nombre||'').trim();
-      const apellidos=(row.apellidos||row.Apellidos||'').trim();
-      const grupo=(row.grupo||row.Grupo||row.grado||row.Grado||'').trim();
-      const matricula=(row.matricula||row.Matricula||'').trim();
-      const tutor=(row.tutor||row.Tutor||'').trim();
-      const telefono=(row.telefono||row.Telefono||row.celular||'').trim();
-      const csvId=(row.id||row.ID||'').trim();
-      if(nombre&&apellidos&&grupo&&matricula){
-        const sid=csvId||genId();
-        if(!S.students.find(s=>s.id===sid||s.matricula===matricula)){S.students.push({id:sid,nombre,apellidos,grupo,matricula,tutor,telefono});c++}else{sk++}
-      }
-    });
-    saveStudents();closeModal('modalImport');renderStudents();updateSelectors();
-    let msg=c+' alumno'+(c!==1?'s':'')+' importado'+(c!==1?'s':'');
-    if(sk)msg+=' ('+sk+' duplicado'+(sk>1?'s':'')+')';
-    toast(msg);
-  },error:()=>toast('Error al leer CSV','error')});e.target.value='';
-}
-function exportStudentsCSV(){
-  if(!S.students.length){toast('No hay alumnos','error');return}
-  const data=S.students.map(s=>({id:s.id,nombre:s.nombre,apellidos:s.apellidos,grupo:s.grupo,matricula:s.matricula,tutor:s.tutor||'',telefono:s.telefono||''}));
-  const csv=Papa.unparse(data);
-  const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='alumnos_'+today()+'.csv';a.click();toast('Exportado');
-}
-
-// ============================================================
-// QR - CREDENTIAL STYLE
-// ============================================================
-function showQR(id){
-  const s=S.students.find(x=>x.id===id);if(!s)return;
-  S.currentQRStudent=s;
-  document.getElementById('qrcode').innerHTML='';
-  new QRCode(document.getElementById('qrcode'),{text:s.id,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});
-  document.getElementById('qrStudentName').textContent=fullName(s);
-  document.getElementById('qrStudentGrade').textContent='Grupo: '+s.grupo;
-  document.getElementById('qrStudentMat').textContent='Matrícula: '+s.matricula;
-  openModal('modalQR');
-}
-function downloadCredentialQR(){
-  const s=S.currentQRStudent;if(!s)return;
-  const qc=document.querySelector('#qrcode canvas');if(!qc)return;
-  const c=document.createElement('canvas'),ctx=c.getContext('2d'),W=400,H=540;
-  c.width=W;c.height=H;
-  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-  const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#0f2b46');g.addColorStop(1,'#1a5276');
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,70);
-  ctx.fillStyle='#fff';ctx.font='bold 15px Arial';ctx.textAlign='center';
-  ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',W/2,32);
-  ctx.font='11px Arial';ctx.globalAlpha=.7;ctx.fillText('AsistenciaQR - Control Escolar',W/2,52);ctx.globalAlpha=1;
-  ctx.strokeStyle='#1e3a5f';ctx.lineWidth=3;ctx.strokeRect(1.5,1.5,W-3,H-3);
-  ctx.drawImage(qc,(W-220)/2,90,220,220);
-  ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(40,330);ctx.lineTo(W-40,330);ctx.stroke();
-  ctx.fillStyle='#0f172a';const nm=fullName(s);
-  ctx.font=nm.length>28?'bold 18px Arial':'bold 22px Arial';
-  ctx.fillText(nm,W/2,370);
-  ctx.fillStyle='#475569';ctx.font='600 16px Arial';ctx.fillText('Grupo: '+s.grupo,W/2,400);
-  ctx.font='14px Arial';ctx.fillText('Matrícula: '+s.matricula,W/2,428);
-  ctx.fillStyle='#f1f5f9';ctx.fillRect(0,H-50,W,50);
-  ctx.fillStyle='#94a3b8';ctx.font='11px Arial';
-  ctx.fillText('Generado: '+new Date().toLocaleDateString('es-MX')+' | AsistenciaQR',W/2,H-25);
-  const a=document.createElement('a');
-  a.href=c.toDataURL('image/png');
-  a.download='credencial_'+s.grupo+'_'+s.matricula+'_'+s.apellidos.replace(/\s/g,'_')+'.png';
-  a.click();toast('Credencial descargada');
-}
-
-async function generateAllQR(){
-  if(!S.students.length){toast('No hay alumnos','error');return}
-  openModal('modalProgress');
-  document.getElementById('progressTitle').textContent='Generando '+S.students.length+' credenciales...';
-  const zip=new JSZip(),folder=zip.folder('credenciales-qr');
-  const tmp=document.createElement('div');tmp.style.cssText='position:fixed;left:-9999px';document.body.appendChild(tmp);
-  for(let i=0;i<S.students.length;i++){
-    const s=S.students[i],pct=Math.round(((i+1)/S.students.length)*100);
-    document.getElementById('progressBar').style.width=pct+'%';
-    document.getElementById('progressText').textContent=(i+1)+' de '+S.students.length+' ('+pct+'%)';
-    tmp.innerHTML='<div id="tmpQR"></div>';
-    new QRCode(document.getElementById('tmpQR'),{text:s.id,width:250,height:250,correctLevel:QRCode.CorrectLevel.M});
-    await new Promise(r=>setTimeout(r,80));
-    const qc=tmp.querySelector('canvas');
-    if(qc){
-      const c=document.createElement('canvas'),ctx=c.getContext('2d'),W=400,H=540;
-      c.width=W;c.height=H;ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-      const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#0f2b46');g.addColorStop(1,'#1a5276');
-      ctx.fillStyle=g;ctx.fillRect(0,0,W,70);ctx.fillStyle='#fff';ctx.font='bold 15px Arial';ctx.textAlign='center';
-      ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',W/2,32);ctx.font='11px Arial';ctx.globalAlpha=.7;
-      ctx.fillText('AsistenciaQR - Control Escolar',W/2,52);ctx.globalAlpha=1;
-      ctx.strokeStyle='#1e3a5f';ctx.lineWidth=3;ctx.strokeRect(1.5,1.5,W-3,H-3);
-      ctx.drawImage(qc,(W-220)/2,90,220,220);
-      ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(40,330);ctx.lineTo(W-40,330);ctx.stroke();
-      ctx.fillStyle='#0f172a';const nm=fullName(s);ctx.font=nm.length>28?'bold 18px Arial':'bold 22px Arial';ctx.fillText(nm,W/2,370);
-      ctx.fillStyle='#475569';ctx.font='600 16px Arial';ctx.fillText('Grupo: '+s.grupo,W/2,400);
-      ctx.font='14px Arial';ctx.fillText('Matrícula: '+s.matricula,W/2,428);
-      ctx.fillStyle='#f1f5f9';ctx.fillRect(0,H-50,W,50);ctx.fillStyle='#94a3b8';ctx.font='11px Arial';ctx.fillText('AsistenciaQR',W/2,H-25);
-      const d=c.toDataURL('image/png').split(',')[1];
-      const fn=(s.grupo+'_'+s.matricula+'_'+s.apellidos+'_'+s.nombre+'.png').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9._-]/g,'');
-      folder.file(fn,d,{base64:true});
-    }
-  }
-  document.body.removeChild(tmp);
-  document.getElementById('progressText').textContent='Comprimiendo ZIP...';
-  const content=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(content);a.download='credenciales-qr-'+today()+'.zip';a.click();
-  closeModal('modalProgress');document.getElementById('progressBar').style.width='0%';
-  toast(S.students.length+' credenciales generadas');
-}
-
-// ============================================================
-// SELECTORS
-// ============================================================
-function updateSelectors(){
-  const grades=[...new Set(S.students.map(s=>s.grupo))].sort();
-  const gf=document.getElementById('manualGradeFilter');
-  gf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
-  const rgf=document.getElementById('filterGrade');
-  rgf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
-  const fs=document.getElementById('filterStudent');
-  fs.innerHTML='<option value="">Todos</option>'+S.students.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+')</option>').join('');
-  filterManualStudents();
-}
-function filterManualStudents(){
-  const grade=document.getElementById('manualGradeFilter').value;
-  const search=(document.getElementById('manualNameSearch')||{}).value||'';
-  const sl=search.toLowerCase();
-  const sel=document.getElementById('manualStudentSelect');
-  let f=S.students;
-  if(grade)f=f.filter(s=>s.grupo===grade);
-  if(sl)f=f.filter(s=>fullName(s).toLowerCase().includes(sl));
-  sel.innerHTML='<option value="">Seleccione...</option>'+f.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+' - '+s.matricula+')</option>').join('');
-}
-
-// ============================================================
-// METHODS
+// SCANNING
 // ============================================================
 function selectMethod(m){
-  document.querySelectorAll('.method-tab[data-method]').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.method-content').forEach(c=>c.classList.remove('active'));
-  const tab=document.querySelector('.method-tab[data-method="'+m+'"]');if(tab)tab.classList.add('active');
-  const panel=document.getElementById('method-'+m);if(panel)panel.classList.add('active');
-  if(m!=='camera')stopCamera();
+  document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.method-btn[data-method="${m}"]`).classList.add('active');
+  document.querySelectorAll('.scan-section').forEach(s=>s.style.display='none');
+  if(m==='camera'){document.getElementById('cameraSection').style.display='block';stopCamera()}
+  else if(m==='file')document.getElementById('fileSection').style.display='block';
+  else if(m==='capture')document.getElementById('captureSection').style.display='block';
 }
-
-// ============================================================
-// CAMERA (Fixed for Android/iOS/PC)
-// ============================================================
-async function enumerateCameras(){
+async function startCamera(){
   try{
-    const devs=await navigator.mediaDevices.enumerateDevices();
-    S.cameras=devs.filter(function(d){return d.kind==='videoinput'});
-    var sel=document.getElementById('cameraSelect');
-    if(!sel)return;
-    sel.innerHTML='';
-    for(var i=0;i<S.cameras.length;i++){
-      var opt=document.createElement('option');
-      opt.value=S.cameras[i].deviceId;
-      opt.textContent=S.cameras[i].label||('Cámara '+(i+1));
-      sel.appendChild(opt);
-    }
-    if(S.cameras.length>1){
-      document.getElementById('cameraSelectBar').style.display='flex';
-      var back=S.cameras.find(function(c){return /back|trasera|rear|environment/i.test(c.label)});
-      if(back)sel.value=back.deviceId;
-    }
-  }catch(e){console.warn('enumerateCameras error:',e)}
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const v=document.getElementById('qrVideo');v.srcObject=scanStream;v.play();
+    document.getElementById('startBtn').style.display='none';
+    document.getElementById('stopBtn').style.display='inline-flex';
+    scanInterval=setInterval(scanFrame,300);
+    toast('Cámara iniciada','info');
+  }catch(e){toast('Error al acceder a la cámara','error');console.error(e)}
 }
-
-async function toggleCamera(){
-  if(S.cameraActive){stopCamera()}
-  else{await startCamera()}
-}
-
-async function testCameraPermission(){
-  // Quick test to see if camera is even accessible in this context
-  try{
-    var testStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
-    testStream.getTracks().forEach(function(t){t.stop()});
-    return true;
-  }catch(e){
-    console.error('Camera permission test failed:',e.name,e.message);
-    if(e.name==='NotAllowedError'&&window.self!==window.top){
-      // We're in an iframe and permission was denied
-      return 'iframe';
-    }
-    return e.name;
-  }
-}
-
-async function startCamera(deviceId){
-  var video=document.getElementById('qrVideo');
-  var container=document.getElementById('cameraContainer');
-  var status=document.getElementById('cameraStatus');
-  var toggleText=document.getElementById('cameraToggleText');
-
-  try{
-    // Check browser support
-    if(!navigator.mediaDevices||typeof navigator.mediaDevices.getUserMedia!=='function'){
-      toast('Tu navegador no soporta cámara. Usa Chrome o Safari actualizado.','error');
-      return;
-    }
-
-    // Check if we are inside an iframe without camera permissions
-    if(window.self!==window.top){
-      console.log('Running inside iframe, testing camera access...');
-      var permTest=await testCameraPermission();
-      if(permTest==='iframe'){
-        toast('⚠️ La cámara está bloqueada por el iframe. Se necesita agregar allow="camera" al iframe.','error');
-        document.getElementById('scanResult').innerHTML='<div class="scan-result scan-result-error"><div class="scan-result-icon">🔒</div><div class="scan-result-content"><div class="scan-result-name">Cámara bloqueada por iframe</div><div class="scan-result-meta">El administrador del sitio debe agregar el atributo <code>allow=\"camera *\"</code> al tag <code>&lt;iframe&gt;</code> donde se incrustó este sistema.<br><br><strong>Ejemplo:</strong><br><code>&lt;iframe src=\"...\" allow=\"camera *\" &gt;</code></div></div></div>';
-        return;
-      }else if(permTest!==true){
-        console.warn('Camera test returned:',permTest);
-      }
-    }
-
-    // Stop any existing stream first
-    if(S.cameraStream){
-      try{S.cameraStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
-      S.cameraStream=null;
-      video.srcObject=null;
-    }
-
-    // Build constraints - KEY FIX: don't use exact with empty deviceId
-    var constraints;
-    var selId=deviceId||'';
-    if(!selId){
-      // Try to get select value, but it might be empty on first load
-      var selEl=document.getElementById('cameraSelect');
-      if(selEl&&selEl.value)selId=selEl.value;
-    }
-
-    if(selId&&selId.length>5){
-      // We have a specific device ID
-      constraints={video:{deviceId:{exact:selId}},audio:false};
-    }else{
-      // No specific device - prefer back camera on mobile
-      constraints={video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false};
-    }
-
-    console.log('Camera constraints:',JSON.stringify(constraints));
-
-    // Try to get camera with preferred constraints
-    try{
-      S.cameraStream=await navigator.mediaDevices.getUserMedia(constraints);
-    }catch(e1){
-      console.warn('Primary camera failed, trying fallback:',e1.name,e1.message);
-      // Fallback 1: try with just facingMode
-      try{
-        S.cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-      }catch(e2){
-        console.warn('Fallback 1 failed, trying any camera:',e2.name);
-        // Fallback 2: try any camera at all
-        try{
-          S.cameraStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
-        }catch(e3){
-          console.warn('Fallback 2 failed, trying user-facing:',e3.name);
-          // Fallback 3: front camera
-          S.cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-        }
-      }
-    }
-
-    if(!S.cameraStream){
-      toast('No se pudo acceder a la cámara','error');
-      return;
-    }
-
-    // Set video source
-    video.srcObject=S.cameraStream;
-    video.setAttribute('autoplay','');
-    video.setAttribute('playsinline','');
-    video.setAttribute('muted','');
-    video.muted=true;
-
-    // Show container
-    container.style.display='block';
-    S.cameraActive=true;
-    S.scanningActive=true;
-
-    // Update UI
-    status.classList.add('active');
-    status.innerHTML='<div class="camera-status-dot"></div><span>Escaneando...</span>';
-    toggleText.textContent='⏸ Detener';
-
-    // Enumerate cameras after we have permission
-    await enumerateCameras();
-
-    // Wait for video to be ready then start scanning
-    video.onloadedmetadata=function(){
-      console.log('Video metadata loaded, dimensions:',video.videoWidth,'x',video.videoHeight);
-      video.play().then(function(){
-        console.log('Video playing, starting QR scan loop');
-        requestAnimationFrame(scanQRLoop);
-        toast('Cámara activa — apunte el QR al recuadro','info');
-      }).catch(function(playErr){
-        console.error('Video play error:',playErr);
-        // On iOS, sometimes we need user gesture to play
-        toast('Toca el video para activar la cámara','info');
-        video.addEventListener('click',function(){
-          video.play().then(function(){
-            requestAnimationFrame(scanQRLoop);
-          });
-        },{once:true});
-      });
-    };
-
-    // Also try to play immediately (works on most Android)
-    try{await video.play()}catch(e){/* handled by onloadedmetadata */}
-
-  }catch(err){
-    console.error('Camera error:',err.name,err.message);
-    var msg='Error al acceder a la cámara';
-    if(err.name==='NotAllowedError'||err.name==='PermissionDeniedError'){
-      msg='❌ Permiso de cámara denegado. Ve a Configuración del navegador > Permisos > Cámara y habilítala para este sitio.';
-    }else if(err.name==='NotFoundError'||err.name==='DevicesNotFoundError'){
-      msg='❌ No se encontró ninguna cámara en el dispositivo';
-    }else if(err.name==='NotReadableError'||err.name==='TrackStartError'){
-      msg='❌ La cámara está siendo usada por otra app. Cierra otras apps y vuelve a intentar.';
-    }else if(err.name==='OverconstrainedError'){
-      msg='❌ Error de configuración de cámara. Intenta de nuevo.';
-    }else if(err.name==='SecurityError'){
-      if(window.self!==window.top){
-        msg='🔒 Cámara bloqueada. El iframe necesita: allow="camera *"';
-      }else{
-        msg='⚠️ Se requiere HTTPS para usar la cámara.';
-      }
-    }else if(err.name==='AbortError'){
-      msg='❌ La solicitud de cámara fue cancelada. Intenta de nuevo.';
-    }
-    toast(msg,'error');
-    stopCamera();
-  }
-}
-
-function switchCamera(){
-  var sel=document.getElementById('cameraSelect');
-  if(S.cameraActive&&sel&&sel.value){
-    startCamera(sel.value);
-  }
-}
-
 function stopCamera(){
-  S.cameraActive=false;
-  S.scanningActive=false;
-  if(S.cameraStream){
-    try{S.cameraStream.getTracks().forEach(function(t){t.stop()})}catch(e){}
-    S.cameraStream=null;
-  }
-  var video=document.getElementById('qrVideo');
-  if(video)video.srcObject=null;
-  var container=document.getElementById('cameraContainer');
-  if(container)container.style.display='none';
-  var selectBar=document.getElementById('cameraSelectBar');
-  if(selectBar)selectBar.style.display='none';
-  var status=document.getElementById('cameraStatus');
-  if(status){status.classList.remove('active');status.innerHTML='<div class="camera-status-dot"></div><span>Detenido</span>'}
-  var toggleText=document.getElementById('cameraToggleText');
-  if(toggleText)toggleText.textContent='▶ Iniciar Cámara';
-  var scanResult=document.getElementById('scanResult');
-  if(scanResult)scanResult.innerHTML='';
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}
+  if(scanInterval){clearInterval(scanInterval);scanInterval=null}
+  document.getElementById('startBtn').style.display='inline-flex';
+  document.getElementById('stopBtn').style.display='none';
 }
-
-// Persistent canvas for scanning (avoid creating new one each frame)
-var _scanCanvas=null;
-var _scanCtx=null;
-
-function scanQRLoop(){
-  if(!S.scanningActive||!S.cameraActive)return;
-  var video=document.getElementById('qrVideo');
-  if(!video||!video.srcObject)return;
-
-  if(video.readyState>=video.HAVE_CURRENT_DATA&&video.videoWidth>0&&video.videoHeight>0){
-    if(!_scanCanvas){
-      _scanCanvas=document.createElement('canvas');
-      _scanCtx=_scanCanvas.getContext('2d',{willReadFrequently:true});
-    }
-    if(_scanCanvas.width!==video.videoWidth||_scanCanvas.height!==video.videoHeight){
-      _scanCanvas.width=video.videoWidth;
-      _scanCanvas.height=video.videoHeight;
-    }
-    _scanCtx.drawImage(video,0,0);
-    try{
-      var imageData=_scanCtx.getImageData(0,0,_scanCanvas.width,_scanCanvas.height);
-      var code=jsQR(imageData.data,imageData.width,imageData.height,{inversionAttempts:'dontInvert'});
-      if(code&&code.data&&code.data.length>0){
-        processQR(code.data,'camera');
-        S.scanningActive=false;
-        setTimeout(function(){
-          if(S.cameraActive){S.scanningActive=true;requestAnimationFrame(scanQRLoop)}
-        },2000);
-        return;
-      }
-    }catch(e){console.warn('QR scan error:',e)}
-  }
-  requestAnimationFrame(scanQRLoop);
+function scanFrame(){
+  const v=document.getElementById('qrVideo');
+  if(v.readyState!==v.HAVE_ENOUGH_DATA)return;
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  canvas.width=v.videoWidth;canvas.height=v.videoHeight;
+  ctx.drawImage(v,0,0,canvas.width,canvas.height);
+  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+  const code=jsQR(img.data,img.width,img.height);
+  if(code)processQR(code.data);
 }
-function processQR(data,source){
-  const s=S.students.find(x=>x.id===data);
-  if(!s){showScan('error','❌','QR no reconocido','No corresponde a ningún alumno registrado');return}
-  const td=today(),ex=S.attendance.find(a=>a.studentId===data&&a.date===td);
-  if(ex){showScan('warning','⚠️','Ya registrado',fullName(s)+' — '+ex.time);playBeep(false);return}
-  const tm=now(),sm=t2m(S.settings.startTime),nm=new Date().getHours()*60+new Date().getMinutes();
-  const lm=sm+S.settings.lateMinutes,st=nm<=lm?'ontime':'late';
-  const ua=navigator.userAgent,dev=/Mobi|Android/i.test(ua)?'Celular':'PC';
-  const br=/Chrome/i.test(ua)?'Chrome':/Safari/i.test(ua)?'Safari':'Otro';
-  S.attendance.push({studentId:data,date:td,time:tm,status:st,source,device:dev,browser:br});
-  saveAttendance();renderToday();
-  showScan(st==='ontime'?'success':'warning',st==='ontime'?'✅':'⏰',fullName(s),s.grupo+' | '+(st==='ontime'?'A TIEMPO':'RETARDO')+' — '+tm);
-  playBeep(st==='ontime');
-}
-function showScan(type,icon,title,detail){
-  const cls=type==='success'?'scan-result-success':type==='warning'?'scan-result-warning':'scan-result-error';
-  document.getElementById('scanResult').innerHTML='<div class="scan-result '+cls+'"><div class="scan-result-icon">'+icon+'</div><div class="scan-result-content"><div class="scan-result-name">'+title+'</div><div class="scan-result-meta">'+detail+'</div></div></div>';
-}
-function playBeep(ok){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=ok?880:440;o.type='sine';g.gain.setValueAtTime(.2,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.15);o.start(c.currentTime);o.stop(c.currentTime+.15)}catch(e){}}
-
-// ============================================================
-// IMAGE SCAN
-// ============================================================
 function handleImageUpload(e){
   const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
+  const reader=new FileReader();
+  reader.onload=ev=>{
     const img=new Image();
     img.onload=()=>{
-      const c=document.createElement('canvas');c.width=img.width;c.height=img.height;
-      const ctx=c.getContext('2d');ctx.drawImage(img,0,0);
-      const id=ctx.getImageData(0,0,c.width,c.height);
-      const code=jsQR(id.data,id.width,id.height);
-      if(code&&code.data)processImageQR(code.data);
-      else document.getElementById('imageResult').innerHTML='<div class="scan-result scan-result-error"><div class="scan-result-icon">⚠️</div><div class="scan-result-content"><div class="scan-result-name">No se detectó QR</div><div class="scan-result-meta">Asegúrese que la imagen sea clara</div></div></div>';
-    };img.src=ev.target.result;
-  };r.readAsDataURL(f);e.target.value='';
+      const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+      canvas.width=img.width;canvas.height=img.height;
+      ctx.drawImage(img,0,0);
+      const idata=ctx.getImageData(0,0,canvas.width,canvas.height);
+      const code=jsQR(idata.data,idata.width,idata.height);
+      if(code)processQR(code.data);
+      else toast('No se detectó código QR','error');
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(f);
+  e.target.value='';
 }
-function processImageQR(data){
-  const s=S.students.find(x=>x.id===data),el=document.getElementById('imageResult');
-  if(!s){el.innerHTML='<div class="scan-result scan-result-error"><div class="scan-result-icon">❌</div><div class="scan-result-content"><div class="scan-result-name">No reconocido</div><div class="scan-result-meta">QR no registrado</div></div></div>';return}
-  const td=today(),ex=S.attendance.find(a=>a.studentId===data&&a.date===td);
-  if(ex){el.innerHTML='<div class="scan-result scan-result-warning"><div class="scan-result-icon">⚠️</div><div class="scan-result-content"><div class="scan-result-name">Ya registrado</div><div class="scan-result-meta">'+fullName(s)+' — '+ex.time+'</div></div></div>';return}
-  const tm=now(),sm=t2m(S.settings.startTime),nm=new Date().getHours()*60+new Date().getMinutes(),lm=sm+S.settings.lateMinutes,st=nm<=lm?'ontime':'late';
-  S.attendance.push({studentId:data,date:td,time:tm,status:st,source:'image',device:'N/A',browser:'N/A'});
+function processQR(data){
+  const s=S.students.find(x=>x.id===data);
+  if(!s){showScanResult('error','❌','QR no válido','Este código no pertenece a ningún alumno registrado');return}
+  const td=today(),tm=time24(),sm=t2m(S.settings.startTime),lm=sm+S.settings.lateMinutes,nm=t2m(tm);
+  const existing=S.attendance.find(a=>a.studentId===s.id&&a.date===td);
+  if(existing){showScanResult('warning','⚠️',fullName(s),`Ya registrado hoy a las ${existing.time}`);return}
+  const status=nm<=lm?'ontime':'late';
+  S.attendance.push({studentId:s.id,date:td,time:tm,status});
   saveAttendance();renderToday();
-  const cls=st==='ontime'?'scan-result-success':'scan-result-warning',ic=st==='ontime'?'✅':'⏰';
-  el.innerHTML='<div class="scan-result '+cls+'"><div class="scan-result-icon">'+ic+'</div><div class="scan-result-content"><div class="scan-result-name">'+fullName(s)+'</div><div class="scan-result-meta">'+s.grupo+' | '+(st==='ontime'?'A TIEMPO':'RETARDO')+' — '+tm+'</div></div></div>';
-  playBeep(st==='ontime');
+  const ico=status==='ontime'?'✅':'⏰';
+  const lbl=status==='ontime'?'A TIEMPO':'RETARDO';
+  showScanResult('success',ico,fullName(s),`${lbl} • ${s.matricula} • ${s.grupo} • ${tm}`);
 }
-
-// ============================================================
-// MANUAL
-// ============================================================
-function registerManual(){
-  const sid=document.getElementById('manualStudentSelect').value;
-  if(!sid){toast('Seleccione alumno','error');return}
-  const s=S.students.find(x=>x.id===sid);if(!s)return;
-  const td=today(),ex=S.attendance.find(a=>a.studentId===sid&&a.date===td);
-  if(ex){toast(fullName(s)+' ya registrado','error');return}
-  const tm=now(),st=document.getElementById('manualStatus').value;
-  S.attendance.push({studentId:sid,date:td,time:tm,status:st,source:'manual',device:'N/A',browser:'N/A'});
-  saveAttendance();renderToday();toast(fullName(s)+' — '+(st==='ontime'?'A tiempo':'Retardo'));
-  document.getElementById('manualStudentSelect').value='';
+function showScanResult(type,icon,name,meta){
+  const sr=document.getElementById('scanResults'),cls=`scan-result-${type}`,d=document.createElement('div');
+  d.className=`scan-result ${cls}`;
+  d.innerHTML=`<div class="scan-result-icon">${icon}</div><div class="scan-result-content"><div class="scan-result-name">${name}</div><div class="scan-result-meta">${meta}</div></div>`;
+  sr.insertBefore(d,sr.firstChild);
+  setTimeout(()=>sr.removeChild(d),8000);
 }
 
 // ============================================================
 // TODAY
 // ============================================================
 function renderToday(){
-  const td=today(),ta=S.attendance.filter(a=>a.date===td);
-  const ont=ta.filter(a=>a.status==='ontime').length,lat=ta.filter(a=>a.status==='late').length;
-  const abs=Math.max(0,S.students.length-ta.length);
-  document.getElementById('statsToday').innerHTML=
-    '<div class="stat-card"><div class="stat-number" style="color:var(--success)">'+ont+'</div><div class="stat-label">A Tiempo</div></div>'+
-    '<div class="stat-card"><div class="stat-number" style="color:var(--warning)">'+lat+'</div><div class="stat-label">Retardos</div></div>'+
-    '<div class="stat-card"><div class="stat-number" style="color:var(--danger)">'+abs+'</div><div class="stat-label">Ausentes</div></div>'+
-    '<div class="stat-card"><div class="stat-number" style="color:var(--primary)">'+ta.length+'/'+S.students.length+'</div><div class="stat-label">Total</div></div>';
-  const tb=document.querySelector('#tableToday tbody');
-  if(!ta.length){tb.innerHTML='<tr><td colspan="5" class="table-empty"><span class="table-empty-icon">📋</span>Sin registros</td></tr>';return}
-  const sorted=[...ta].sort((a,b)=>b.time.localeCompare(a.time));
-  tb.innerHTML=sorted.map(a=>{const s=S.students.find(x=>x.id===a.studentId);if(!s)return'';
-    return'<tr><td><strong>'+a.time+'</strong></td><td>'+fullName(s)+'</td><td><span class="badge badge-info">'+s.grupo+'</span></td><td>'+s.matricula+'</td><td><span class="badge '+(a.status==='ontime'?'badge-success':'badge-warning')+'">'+(a.status==='ontime'?'A Tiempo':'Retardo')+'</span></td></tr>'}).join('');
+  const td=today(),att=S.attendance.filter(a=>a.date===td),pres=att.filter(a=>a.status==='ontime'),late=att.filter(a=>a.status==='late'),abs=S.students.length-att.length;
+  document.getElementById('statPresent').textContent=pres.length;
+  document.getElementById('statLate').textContent=late.length;
+  document.getElementById('statAbsent').textContent=abs;
+  const tb=document.getElementById('todayTable');
+  if(!att.length){tb.innerHTML='<tr><td colspan="5" class="table-empty"><span class="table-empty-icon">📭</span><div>Sin registros hoy</div></td></tr>';return}
+  tb.innerHTML=att.map(a=>{
+    const s=S.students.find(x=>x.id===a.studentId);if(!s)return'';
+    const badge=a.status==='ontime'?'<span class="badge badge-success">✅ A Tiempo</span>':'<span class="badge badge-warning">⏰ Retardo</span>';
+    return `<tr><td><strong>${fullName(s)}</strong></td><td><span class="badge badge-info">${s.grupo}</span></td><td>${badge}</td><td>${a.time}</td><td><button class="btn btn-sm btn-danger" onclick="deleteAttendance('${a.studentId}','${a.date}')">🗑️</button></td></tr>`;
+  }).join('');
 }
+function deleteAttendance(sid,date){confirm_('Eliminar','¿Eliminar este registro?',()=>{S.attendance=S.attendance.filter(a=>!(a.studentId===sid&&a.date===date));saveAttendance();renderToday();renderAbsences();toast('Registro eliminado','info')})}
 
 // ============================================================
-// REPORTS
+// ABSENCES & TARDINESS
 // ============================================================
-function selectAbsType(t){
-  S.absType=t;
-  document.querySelectorAll('.method-tab[data-abs]').forEach(x=>x.classList.remove('active'));
-  const tab=document.querySelector('.method-tab[data-abs="'+t+'"]');if(tab)tab.classList.add('active');
-  renderAbsences();
-}
-function clearFilters(){
-  ['filterDate','filterMonth','filterStudent','filterName','filterGrade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
-  renderAbsences();toast('Filtros limpiados','info');
-}
 function getSchoolDates(){
-  if(!S.settings.semesterStart)return[...new Set(S.attendance.map(a=>a.date))].sort();
-  const st=new Date(S.settings.semesterStart+'T12:00:00'),ed=new Date(),dates=[];
-  for(let d=new Date(st);d<=ed;d.setDate(d.getDate()+1)){const ds=d.toISOString().split('T')[0],wd=d.getDay();if(wd!==0&&wd!==6&&!isHoliday(ds))dates.push(ds)}
+  const start=S.settings.semesterStart?new Date(S.settings.semesterStart):new Date(new Date().getFullYear(),0,1);
+  const end=new Date();
+  const dates=[],hd=S.holidays.map(h=>h.date);
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    const ds=d.toISOString().split('T')[0],dow=d.getDay();
+    if(dow!==0&&dow!==6&&!hd.includes(ds))dates.push(ds);
+  }
   return dates;
 }
 function renderAbsences(){
-  const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
+  const fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
-  let recs=[];
-  if(t==='absences'||t==='individual'){
-    getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
-      const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
-      S.students.forEach(s=>{
-        if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
-        if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);
-          recs.push({student:s,date,type:'Inasistencia',time:'',justified:j,reason:j?j.reason:''})}
-      });
+  const abs=[],tard=[];
+  getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
+    const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
+    S.students.forEach(s=>{if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+      if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);abs.push({s,date,j})}
     });
-  }
-  if(t==='tardiness'||t==='individual'){
-    let tr=S.attendance.filter(a=>a.status==='late');
-    if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
-    tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;
-      if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
-      const j=S.justifications.find(jj=>jj.studentId===r.studentId&&jj.date===r.date);
-      recs.push({student:s,date:r.date,type:'Retardo',time:r.time,justified:j,reason:j?j.reason:''});
-    });
-  }
-  recs.sort((a,b)=>b.date.localeCompare(a.date));
-  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:'Individual'};
-  document.getElementById('absencesTitle').textContent=(titles[t]||'Resultados')+' ('+recs.length+')';
-  const tb=document.querySelector('#tableAbsences tbody');
-  if(!recs.length){tb.innerHTML='<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">📊</span>Sin resultados</td></tr>';document.getElementById('absencesStats').innerHTML='';return}
-  const tot=recs.length,jus=recs.filter(r=>r.justified).length,unj=tot-jus;
-  document.getElementById('absencesStats').innerHTML='<div class="stats-grid"><div class="stat-card"><div class="stat-number" style="color:var(--primary)">'+tot+'</div><div class="stat-label">Total</div></div><div class="stat-card"><div class="stat-number" style="color:var(--success)">'+jus+'</div><div class="stat-label">Justificadas</div></div><div class="stat-card"><div class="stat-number" style="color:var(--danger)">'+unj+'</div><div class="stat-label">Sin Justificar</div></div></div>';
-  tb.innerHTML=recs.map(r=>{const s=r.student;
-    const jb=r.justified?'<span class="badge badge-success" title="'+esc(r.reason)+'">Sí</span>':'<span class="badge badge-danger">No</span>';
-    const bt=r.type==='Retardo'?'badge-warning':'badge-danger';
-    const wa=s.telefono?'<button class="btn btn-whatsapp btn-sm" onclick="sendWA(\''+s.telefono+'\',\''+esc(fullName(s)).replace(/'/g,"\'")+'\',\''+r.date+'\',\''+r.type+'\')">📱 WA</button>':'';
-    return'<tr><td><strong>'+esc(fullName(s))+'</strong></td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+fmtDate(r.date)+'</td><td><span class="badge '+bt+'">'+r.type+'</span></td><td>'+(r.time||'—')+'</td><td>'+jb+'</td><td><div class="btn-group"><button class="btn btn-primary btn-sm" onclick="justifyAbsence(\''+s.id+'\',\''+r.date+'\')">📝</button>'+wa+'</div></td></tr>'
-  }).join('');
+  });
+  let tr=S.attendance.filter(a=>a.status==='late');
+  if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
+  tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+    const j=S.justifications.find(jj=>jj.studentId===r.studentId&&jj.date===r.date);tard.push({s,r,j});
+  });
+  const abt=document.getElementById('absencesTable');
+  if(!abs.length)abt.innerHTML='<tr><td colspan="6" class="table-empty"><span class="table-empty-icon">📭</span><div>Sin inasistencias</div></td></tr>';
+  else abt.innerHTML=abs.map(({s,date,j})=>`
+    <tr>
+      <td><strong>${fullName(s)}</strong></td>
+      <td><span class="badge badge-info">${s.grupo}</span></td>
+      <td>${s.matricula}</td>
+      <td>${date}</td>
+      <td>${j?`<span class="badge badge-success">✅ Justificada</span>`:`<span class="badge badge-danger">❌ Sin justificar</span>`}</td>
+      <td>
+        ${!j?`<button class="btn btn-sm btn-warning" onclick="openJustify('${s.id}','${date}')">📝 Justificar</button>`:''}
+        ${j?`<button class="btn btn-sm btn-danger" onclick="deleteJustification('${s.id}','${date}')">🗑️ Quitar</button>`:''}
+        ${s.phone?`<a href="https://wa.me/${s.phone}" target="_blank" class="btn btn-sm btn-whatsapp">💬 WhatsApp</a>`:''}
+      </td>
+    </tr>
+  `).join('');
+  const tbt=document.getElementById('tardinessTable');
+  if(!tard.length)tbt.innerHTML='<tr><td colspan="7" class="table-empty"><span class="table-empty-icon">📭</span><div>Sin retardos</div></td></tr>';
+  else tbt.innerHTML=tard.map(({s,r,j})=>`
+    <tr>
+      <td><strong>${fullName(s)}</strong></td>
+      <td><span class="badge badge-info">${s.grupo}</span></td>
+      <td>${s.matricula}</td>
+      <td>${r.date}</td>
+      <td>${r.time}</td>
+      <td>${j?`<span class="badge badge-success">✅ Justificada</span>`:`<span class="badge badge-danger">❌ Sin justificar</span>`}</td>
+      <td>
+        ${!j?`<button class="btn btn-sm btn-warning" onclick="openJustify('${s.id}','${r.date}')">📝 Justificar</button>`:''}
+        ${j?`<button class="btn btn-sm btn-danger" onclick="deleteJustification('${s.id}','${r.date}')">🗑️ Quitar</button>`:''}
+        ${s.phone?`<a href="https://wa.me/${s.phone}" target="_blank" class="btn btn-sm btn-whatsapp">💬 WhatsApp</a>`:''}
+      </td>
+    </tr>
+  `).join('');
 }
-function justifyAbsence(sid,date){
-  const s=S.students.find(x=>x.id===sid);if(!s)return;
+function openJustify(sid,date){
   document.getElementById('justifyStudentId').value=sid;
   document.getElementById('justifyDate').value=date;
-  const ex=S.justifications.find(j=>j.studentId===sid&&j.date===date);
-  document.getElementById('justifyReason').value=ex?ex.reason:'';
-  document.getElementById('justifyInfo').innerHTML='<strong>'+esc(fullName(s))+'</strong><br>Grupo: '+esc(s.grupo)+' | Fecha: '+fmtDate(date);
-  openModal('modalJustify');setTimeout(()=>document.getElementById('justifyReason').focus(),100);
+  document.getElementById('justifyReason').value='';
+  openModal('modalJustify');
 }
-function saveJustify(){
-  const sid=document.getElementById('justifyStudentId').value,date=document.getElementById('justifyDate').value;
-  const reason=document.getElementById('justifyReason').value.trim();
-  if(!reason){toast('Escribe el motivo','error');return}
-  S.justifications=S.justifications.filter(j=>!(j.studentId===sid&&j.date===date));
+function saveJustification(){
+  const sid=document.getElementById('justifyStudentId').value,date=document.getElementById('justifyDate').value,reason=document.getElementById('justifyReason').value.trim();
+  if(!reason){toast('Escribe un motivo','error');return}
   S.justifications.push({studentId:sid,date,reason});
-  saveJustifications();closeModal('modalJustify');renderAbsences();toast('Justificada');
+  saveJustifications();renderAbsences();closeModal('modalJustify');toast('Justificación guardada');
 }
-function sendWA(phone,name,date,type){
-  let p=phone.replace(/\D/g,'');if(p.length===10)p='52'+p;
-  const t=type==='Retardo'?'retardo':'inasistencia';
-  const msg=encodeURIComponent('Estimado padre/tutor de '+name+':\n\nSe registró una '+t+' el día '+fmtDate(date)+'.\n\nFavor de indicar el motivo.\n\nAtte. Control de Asistencia Escolar');
-  window.open('https://wa.me/'+p+'?text='+msg,'_blank');
+function deleteJustification(sid,date){confirm_('Eliminar','¿Quitar esta justificación?',()=>{S.justifications=S.justifications.filter(j=>!(j.studentId===sid&&j.date===date));saveJustifications();renderAbsences();toast('Justificación eliminada','info')})}
+
+// ============================================================
+// HOLIDAYS
+// ============================================================
+function renderHolidays(){
+  const tb=document.getElementById('holidaysTable');
+  if(!S.holidays.length){tb.innerHTML='<tr><td colspan="3" class="table-empty"><span class="table-empty-icon">📭</span><div>Sin días festivos</div></td></tr>';return}
+  tb.innerHTML=S.holidays.map(h=>`<tr><td>${h.date}</td><td>${h.description}</td><td><button class="btn btn-sm btn-danger" onclick="deleteHoliday('${h.date}')">🗑️</button></td></tr>`).join('');
+}
+function addHoliday(){
+  const date=document.getElementById('holidayDate').value,desc=document.getElementById('holidayDesc').value.trim();
+  if(!date||!desc){toast('Completa los campos','error');return}
+  if(S.holidays.find(h=>h.date===date)){toast('Fecha ya existe','error');return}
+  S.holidays.push({date,description:desc});
+  saveHolidaysLS();renderHolidays();closeModal('modalHoliday');
+  document.getElementById('holidayDate').value='';document.getElementById('holidayDesc').value='';toast('Día festivo agregado');
+}
+function deleteHoliday(date){confirm_('Eliminar','¿Eliminar este día festivo?',()=>{S.holidays=S.holidays.filter(h=>h.date!==date);saveHolidaysLS();renderHolidays();toast('Día festivo eliminado','info')})}
+
+// ============================================================
+// SELECTORS
+// ============================================================
+function updateSelectors(){
+  const fs=document.getElementById('filterStudent'),fg=document.getElementById('filterGrade');
+  if(fs){
+    const sv=fs.value;
+    fs.innerHTML='<option value="">Todos</option>'+S.students.map(s=>`<option value="${s.id}">${fullName(s)} (${s.matricula})</option>`).join('');
+    fs.value=sv;
+  }
+  if(fg){
+    const gv=fg.value,grades=[...new Set(S.students.map(s=>s.grupo))].sort();
+    fg.innerHTML='<option value="">Todos</option>'+grades.map(g=>`<option value="${g}">${g}</option>`).join('');
+    fg.value=gv;
+  }
 }
 
 // ============================================================
-// EXPORT
+// BACKUP & IMPORT (MEJORADO)
 // ============================================================
-function exportAbsences(){
-  const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
+function exportBackup(){
+  const data={
+    version: '2.0',
+    exportDate: new Date().toISOString(),
+    students: S.students,
+    attendance: S.attendance,
+    justifications: S.justifications,
+    holidays: S.holidays,
+    settings: S.settings
+  };
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`AsistenciaQR_Respaldo_${today()}.json`;
+  a.click();
+  toast('Respaldo exportado exitosamente');
+}
+
+function importBackup(event){
+  const file=event.target.files[0];
+  if(!file){return}
+  
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      
+      // Validar estructura del archivo
+      if(!data.students || !Array.isArray(data.students)){
+        toast('Archivo inválido: falta información de alumnos','error');
+        return;
+      }
+      
+      // Guardar datos pendientes y mostrar modal
+      pendingImportData = data;
+      
+      // Mostrar vista previa
+      document.getElementById('previewStudents').textContent = data.students?.length || 0;
+      document.getElementById('previewAttendance').textContent = data.attendance?.length || 0;
+      document.getElementById('previewJustifications').textContent = data.justifications?.length || 0;
+      document.getElementById('previewHolidays').textContent = data.holidays?.length || 0;
+      document.getElementById('importPreview').style.display = 'block';
+      
+      // Abrir modal
+      openModal('modalImport');
+      
+    }catch(err){
+      toast('Error al leer el archivo: ' + err.message,'error');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function confirmImport(){
+  if(!pendingImportData){
+    toast('No hay datos para importar','error');
+    return;
+  }
+  
+  const mode = document.querySelector('input[name="importMode"]:checked').value;
+  const data = pendingImportData;
+  
+  if(mode === 'replace'){
+    // Modo reemplazar: borrar todo y cargar nuevos datos
+    S.students = data.students || [];
+    S.attendance = data.attendance || [];
+    S.justifications = data.justifications || [];
+    S.holidays = data.holidays || [];
+    if(data.settings) S.settings = {...S.settings, ...data.settings};
+    
+    toast('Datos reemplazados completamente');
+  } else {
+    // Modo fusionar: combinar datos inteligentemente
+    const added = {students: 0, attendance: 0, justifications: 0, holidays: 0};
+    
+    // Fusionar alumnos (evitar duplicados por matrícula)
+    if(data.students){
+      data.students.forEach(newStudent => {
+        const exists = S.students.find(s => s.matricula === newStudent.matricula);
+        if(!exists){
+          S.students.push(newStudent);
+          added.students++;
+        }
+      });
+    }
+    
+    // Fusionar asistencias (evitar duplicados por studentId + date)
+    if(data.attendance){
+      data.attendance.forEach(newAtt => {
+        const exists = S.attendance.find(a => 
+          a.studentId === newAtt.studentId && a.date === newAtt.date
+        );
+        if(!exists){
+          S.attendance.push(newAtt);
+          added.attendance++;
+        }
+      });
+    }
+    
+    // Fusionar justificaciones (evitar duplicados por studentId + date)
+    if(data.justifications){
+      data.justifications.forEach(newJust => {
+        const exists = S.justifications.find(j => 
+          j.studentId === newJust.studentId && j.date === newJust.date
+        );
+        if(!exists){
+          S.justifications.push(newJust);
+          added.justifications++;
+        }
+      });
+    }
+    
+    // Fusionar festivos (evitar duplicados por fecha)
+    if(data.holidays){
+      data.holidays.forEach(newHol => {
+        const exists = S.holidays.find(h => h.date === newHol.date);
+        if(!exists){
+          S.holidays.push(newHol);
+          added.holidays++;
+        }
+      });
+    }
+    
+    // Fusionar configuración
+    if(data.settings){
+      S.settings = {...S.settings, ...data.settings};
+    }
+    
+    toast(`Datos fusionados: ${added.students} alumnos, ${added.attendance} asistencias, ${added.justifications} justificaciones, ${added.holidays} festivos`);
+  }
+  
+  // Guardar todo
+  saveStudents();
+  saveAttendance();
+  saveJustifications();
+  saveHolidaysLS();
+  localStorage.setItem('aqr_settings', JSON.stringify(S.settings));
+  
+  // Refrescar interfaz
+  refreshAll();
+  
+  // Cerrar modal y limpiar
+  closeModal('modalImport');
+  pendingImportData = null;
+}
+
+// ============================================================
+// EXPORT REPORTS
+// ============================================================
+function exportReport(t){
+  const fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
   let recs=[];
@@ -1183,8 +1320,6 @@ function updateClock(){
   const n=new Date();
   const ts=n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
   const ds=n.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  // header clock removed
-  // header date removed
   const bc=document.getElementById('bigClock');if(bc)bc.textContent=ts;
   const bd=document.getElementById('bigDate');if(bd)bd.textContent=ds.charAt(0).toUpperCase()+ds.slice(1);
   const sm=t2m(S.settings.startTime),nm=n.getHours()*60+n.getMinutes(),lm=sm+S.settings.lateMinutes;
@@ -1211,8 +1346,11 @@ function setupDropZone(){
   dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
   dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');
     const f=e.dataTransfer.files[0];
-    if(f&&(f.name.endsWith('.csv')||f.type==='text/csv')){importCSV({target:{files:[f],value:''}})}
-    else toast('Solo archivos CSV','error');
+    if(f&&(f.name.endsWith('.json')||f.type==='application/json')){
+      const fakeEvent = {target: {files: [f]}};
+      importBackup(fakeEvent);
+    }
+    else toast('Solo archivos JSON','error');
   });
 }
 function init(){
@@ -1224,6 +1362,15 @@ function init(){
   setupDropZone();
   document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active')}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'))});
+  
+  // Eventos para selección visual de opciones de importación
+  document.querySelectorAll('.import-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('.import-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      this.querySelector('input[type="radio"]').checked = true;
+    });
+  });
 }
 init();
 </script>
