@@ -902,13 +902,27 @@ function viewQR(id){
   new QRCode(qc,{text:s.id,width:200,height:200});
   openModal('modalViewQR');
 }
+function buildQRImage(qrCanvas,s,callback){
+  const pad=20,nameH=28,metaH=20,gap=8;
+  const qw=qrCanvas.width,qh=qrCanvas.height;
+  const w=qw+pad*2,h=qh+pad*2+nameH+metaH+gap;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);
+  ctx.drawImage(qrCanvas,pad,pad);
+  ctx.fillStyle='#0f172a';ctx.font='bold 16px DM Sans,sans-serif';ctx.textAlign='center';
+  ctx.fillText(fullName(s),w/2,qh+pad+nameH);
+  ctx.fillStyle='#475569';ctx.font='13px DM Sans,sans-serif';
+  ctx.fillText(s.matricula+' • '+s.grupo,w/2,qh+pad+nameH+gap+metaH-4);
+  c.toBlob(b=>callback(b));
+}
 function downloadCurrentQR(){
   if(!currentQRStudent)return;
   const qc=document.getElementById('qrCodeDisplay'),canvas=qc.querySelector('canvas');
   if(!canvas)return;
-  canvas.toBlob(b=>{
+  buildQRImage(canvas,currentQRStudent,b=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
-    a.download=`QR_${currentQRStudent.matricula}_${currentQRStudent.name}.png`;a.click();
+    a.download=`QR_${currentQRStudent.matricula}_${fullName(currentQRStudent)}.png`;a.click();
     toast('QR descargado');
   });
 }
@@ -921,7 +935,7 @@ function downloadAllQR(){
     new QRCode(tmp,{text:s.id,width:300,height:300});
     setTimeout(()=>{
       const canvas=tmp.querySelector('canvas');
-      if(canvas){canvas.toBlob(b=>{zip.file(`QR_${s.matricula}_${s.name}.png`,b);done++;if(done===S.students.length){zip.generateAsync({type:'blob'}).then(c=>{const a=document.createElement('a');a.href=URL.createObjectURL(c);a.download='QR_Alumnos.zip';a.click();toast('Todos los QR descargados')})}})}
+      if(canvas){buildQRImage(canvas,s,b=>{zip.file(`QR_${s.matricula}_${fullName(s)}.png`,b);done++;if(done===S.students.length){zip.generateAsync({type:'blob'}).then(c=>{const a=document.createElement('a');a.href=URL.createObjectURL(c);a.download='QR_Alumnos.zip';a.click();toast('Todos los QR descargados')})}})}
       document.body.removeChild(tmp);
     },100);
   });
