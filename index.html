@@ -902,27 +902,55 @@ function viewQR(id){
   new QRCode(qc,{text:s.id,width:200,height:200});
   openModal('modalViewQR');
 }
-function buildQRImage(qrCanvas,s,callback){
-  const pad=20,nameH=28,metaH=20,gap=8;
-  const qw=qrCanvas.width,qh=qrCanvas.height;
-  const w=qw+pad*2,h=qh+pad*2+nameH+metaH+gap;
-  const c=document.createElement('canvas');c.width=w;c.height=h;
+function buildCredentialQR(qrCanvas,s,callback){
+  const scale=2;
+  const w=400*scale,headerH=60*scale,padTop=30*scale,qrSize=qrCanvas.width*scale,padMid=20*scale,nameH=24*scale,groupH=20*scale,matH=18*scale,padBot=30*scale,footerH=40*scale;
+  const totalH=headerH+padTop+qrSize+padMid+nameH+groupH+matH+padBot+footerH;
+  const c=document.createElement('canvas');c.width=w;c.height=totalH;
   const ctx=c.getContext('2d');
-  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);
-  ctx.drawImage(qrCanvas,pad,pad);
-  ctx.fillStyle='#0f172a';ctx.font='bold 16px DM Sans,sans-serif';ctx.textAlign='center';
-  ctx.fillText(fullName(s),w/2,qh+pad+nameH);
-  ctx.fillStyle='#475569';ctx.font='13px DM Sans,sans-serif';
-  ctx.fillText(s.matricula+' • '+s.grupo,w/2,qh+pad+nameH+gap+metaH-4);
+  // Background
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,totalH);
+  // Header gradient
+  const hg=ctx.createLinearGradient(0,0,w,headerH);
+  hg.addColorStop(0,'#0f2b46');hg.addColorStop(0.5,'#1e3a5f');hg.addColorStop(1,'#1a5276');
+  ctx.fillStyle=hg;ctx.fillRect(0,0,w,headerH);
+  ctx.fillStyle='#ffffff';ctx.font='bold '+(16*scale)+'px DM Sans,Arial,sans-serif';ctx.textAlign='center';
+  ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',w/2,28*scale);
+  ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font=(10*scale)+'px DM Sans,Arial,sans-serif';
+  ctx.fillText('AsistenciaQR - Control Escolar',w/2,46*scale);
+  // QR code centered
+  const qrX=(w-qrSize)/2,qrY=headerH+padTop;
+  ctx.drawImage(qrCanvas,qrX,qrY,qrSize,qrSize);
+  // Divider line
+  const divY=qrY+qrSize+10*scale;
+  ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1*scale;
+  ctx.beginPath();ctx.moveTo(40*scale,divY);ctx.lineTo(w-40*scale,divY);ctx.stroke();
+  // Student name
+  const nameY=divY+padMid+nameH;
+  ctx.fillStyle='#0f172a';ctx.font='bold '+(18*scale)+'px DM Sans,Arial,sans-serif';ctx.textAlign='center';
+  ctx.fillText(fullName(s).toUpperCase(),w/2,nameY);
+  // Group
+  const grpY=nameY+groupH+4*scale;
+  ctx.fillStyle='#1e3a5f';ctx.font='bold '+(14*scale)+'px DM Sans,Arial,sans-serif';
+  ctx.fillText('Grupo: '+s.grupo,w/2,grpY);
+  // Matricula
+  const matY=grpY+matH+2*scale;
+  ctx.fillStyle='#475569';ctx.font=(12*scale)+'px DM Sans,Arial,sans-serif';
+  ctx.fillText('Matrícula: '+s.matricula,w/2,matY);
+  // Footer
+  const fY=totalH-footerH;
+  const fg=ctx.createLinearGradient(0,fY,w,totalH);
+  fg.addColorStop(0,'#0f2b46');fg.addColorStop(1,'#1a5276');
+  ctx.fillStyle=fg;ctx.fillRect(0,fY,w,footerH);
   c.toBlob(b=>callback(b));
 }
 function downloadCurrentQR(){
   if(!currentQRStudent)return;
   const qc=document.getElementById('qrCodeDisplay'),canvas=qc.querySelector('canvas');
   if(!canvas)return;
-  buildQRImage(canvas,currentQRStudent,b=>{
+  buildCredentialQR(canvas,currentQRStudent,b=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
-    a.download=`QR_${currentQRStudent.matricula}_${fullName(currentQRStudent)}.png`;a.click();
+    a.download=`${currentQRStudent.grupo}_${currentQRStudent.matricula}_${currentQRStudent.lastName1}_${currentQRStudent.lastName2}_${currentQRStudent.name}.png`.replace(/ /g,'_');a.click();
     toast('QR descargado');
   });
 }
@@ -935,7 +963,11 @@ function downloadAllQR(){
     new QRCode(tmp,{text:s.id,width:300,height:300});
     setTimeout(()=>{
       const canvas=tmp.querySelector('canvas');
-      if(canvas){buildQRImage(canvas,s,b=>{zip.file(`QR_${s.matricula}_${fullName(s)}.png`,b);done++;if(done===S.students.length){zip.generateAsync({type:'blob'}).then(c=>{const a=document.createElement('a');a.href=URL.createObjectURL(c);a.download='QR_Alumnos.zip';a.click();toast('Todos los QR descargados')})}})}
+      if(canvas){buildCredentialQR(canvas,s,b=>{
+        const fname=`${s.grupo}_${s.matricula}_${s.lastName1}_${s.lastName2}_${s.name}.png`.replace(/ /g,'_');
+        zip.file(fname,b);done++;
+        if(done===S.students.length){zip.generateAsync({type:'blob'}).then(c=>{const a=document.createElement('a');a.href=URL.createObjectURL(c);a.download='QR_Alumnos.zip';a.click();toast('Todos los QR descargados')})}
+      })}
       document.body.removeChild(tmp);
     },100);
   });
