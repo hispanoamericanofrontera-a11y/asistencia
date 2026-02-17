@@ -490,6 +490,8 @@ body{background:#fff}
 <div class="btn-group">
 <button class="btn btn-sm btn-outline" onclick="document.getElementById('csvInput').click()">📥 Importar Respaldo JSON</button>
 <input type="file" id="csvInput" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+<button class="btn btn-sm btn-success" onclick="document.getElementById('csvPlantillaInput').click()">📄 Importar Plantilla CSV</button>
+<input type="file" id="csvPlantillaInput" accept=".csv" style="display:none" onchange="importCSVPlantilla(event)">
 <button class="btn btn-sm btn-accent" onclick="downloadAllQR()">📦 Descargar Todos los QR</button>
 </div>
 </div>
@@ -823,6 +825,28 @@ function addStudent(){
   document.getElementById('studentGrupo').value='';
   document.getElementById('studentPhone').value='';
   toast('Alumno agregado');
+}
+function importCSVPlantilla(event){
+  const file=event.target.files[0];if(!file)return;
+  Papa.parse(file,{header:true,skipEmptyLines:true,complete:function(results){
+    if(!results.data||!results.data.length){toast('Archivo vacío o formato inválido','error');event.target.value='';return}
+    let added=0,skipped=0;
+    results.data.forEach(row=>{
+      const name=(row['Nombre']||row['nombre']||'').trim();
+      const ln1=(row['Apellido Paterno']||row['apellido_paterno']||row['ApellidoPaterno']||row['Apellido1']||'').trim();
+      const ln2=(row['Apellido Materno']||row['apellido_materno']||row['ApellidoMaterno']||row['Apellido2']||'').trim();
+      const mat=(row['Matricula']||row['matricula']||row['Matrícula']||row['matrícula']||'').trim();
+      const grp=(row['Grupo']||row['grupo']||'').trim();
+      const phone=(row['Telefono']||row['telefono']||row['Teléfono']||row['teléfono']||row['Phone']||'').trim();
+      if(!name||!ln1||!ln2||!mat||!grp){skipped++;return}
+      if(S.students.find(s=>s.matricula===mat)){skipped++;return}
+      S.students.push({id:uid(),name,lastName1:ln1,lastName2:ln2,matricula:mat,grupo:grp,phone});
+      added++;
+    });
+    saveStudents();renderStudents();updateSelectors();
+    toast(added+' alumnos importados'+(skipped?' ('+skipped+' omitidos)':''));
+    event.target.value='';
+  },error:function(){toast('Error al leer el archivo CSV','error');event.target.value='';}});
 }
 function renderStudents(){
   const fn=(document.getElementById('filterName')||{}).value||'',fnl=fn.toLowerCase();
