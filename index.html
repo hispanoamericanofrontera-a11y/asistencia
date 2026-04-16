@@ -1387,9 +1387,12 @@ function setupDropZone(){
 }
 function init(){
   loadData();
-  cargarAlumnosFirebase();
   refreshAll();
   setInterval(updateClock,1000);
+
+  // 👇 cargar Firebase SIN romper nada
+  cargarAlumnosFirebase();
+}
   document.getElementById('filterDate').value='';
   selectMethod('camera');
   document.getElementById('fileInput').addEventListener('change',handleImageUpload);
@@ -1462,13 +1465,13 @@ async function guardarAsistenciaFirebase(student) {
     console.error("❌ Error Firebase:", error);
   }
 async function cargarAlumnosFirebase() {
-  const db = window.db;
-  const schoolId = "demo_school";
-
   try {
+    const db = window.db;
+    const schoolId = "demo_school";
+
     const querySnapshot = await getDocs(collection(db, "schools", schoolId, "students"));
 
-    S.students = []; // limpia lo local
+    S.students = [];
 
     querySnapshot.forEach((doc) => {
       S.students.push({
@@ -1483,7 +1486,9 @@ async function cargarAlumnosFirebase() {
     console.log("🔥 Alumnos cargados desde Firebase");
 
   } catch (error) {
-    console.error("Error cargando alumnos:", error);
+    console.error("❌ Error cargando alumnos:", error);
+  }
+}
   }
 }
 </script>
