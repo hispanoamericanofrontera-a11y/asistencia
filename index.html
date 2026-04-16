@@ -1414,7 +1414,7 @@ init();
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAqJir71X4SVW-WK2WMo8fD2seM0-SFX2w",
@@ -1429,66 +1429,69 @@ init();
   const db = getFirestore(app);
 
   window.db = db;
-  async function guardarAlumnoFirebase(student) {
-  const db = window.db;
-  const schoolId = "demo_school";
 
-  try {
-    await addDoc(collection(db, "schools", schoolId, "students"), student);
-    console.log("Alumno guardado en Firebase");
-  } catch (error) {
-    console.error(error);
-  }
-}
+  // ===============================
+  // GUARDAR ALUMNO
+  // ===============================
+  window.guardarAlumnoFirebase = async function(student) {
+    try {
+      await addDoc(collection(db, "schools", "demo_school", "students"), student);
+      console.log("✅ Alumno guardado en Firebase");
+    } catch (error) {
+      console.error("❌ Error guardando alumno:", error);
+    }
+  };
+
+  // ===============================
+  // GUARDAR ASISTENCIA
+  // ===============================
+  window.guardarAsistenciaFirebase = async function(student) {
+    try {
+      const now = new Date();
+
+      await addDoc(collection(db, "schools", "demo_school", "attendance"), {
+        studentId: student.id,
+        name: student.name,
+        grupo: student.grupo,
+        fecha: now.toISOString().split("T")[0],
+        hora: now.toLocaleTimeString(),
+        status: "presente",
+        createdAt: now
+      });
+
+      console.log("✅ Asistencia guardada");
+    } catch (error) {
+      console.error("❌ Error Firebase:", error);
+    }
+  };
+
+  // ===============================
+  // CARGAR ALUMNOS
+  // ===============================
+  window.cargarAlumnosFirebase = async function() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "schools", "demo_school", "students"));
+
+      S.students = [];
+
+      querySnapshot.forEach((doc) => {
+        S.students.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+
+      renderStudents();
+      updateSelectors();
+
+      console.log("🔥 Alumnos cargados desde Firebase");
+
+    } catch (error) {
+      console.error("❌ Error cargando alumnos:", error);
+    }
+  };
 
   console.log("🔥 Firebase conectado correctamente");
-async function guardarAsistenciaFirebase(student) {
-  const db = window.db;
-  const schoolId = "demo_school";
-
-  const now = new Date();
-
-  try {
-    await addDoc(collection(db, "schools", schoolId, "attendance"), {
-      studentId: student.id,
-      name: student.name,
-      grupo: student.grupo,
-      fecha: now.toISOString().split("T")[0],
-      hora: now.toLocaleTimeString(),
-      status: "presente",
-      createdAt: now
-    });
-
-    console.log("✅ Guardado en Firebase");
-
-  } catch (error) {
-    console.error("❌ Error Firebase:", error);
-  }
-async function cargarAlumnosFirebase() {
-  try {
-    const db = window.db;
-    const schoolId = "demo_school";
-
-    const querySnapshot = await getDocs(collection(db, "schools", schoolId, "students"));
-
-    S.students = [];
-
-    querySnapshot.forEach((doc) => {
-      S.students.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
-
-    renderStudents();
-    updateSelectors();
-
-    console.log("🔥 Alumnos cargados desde Firebase");
-
-  } catch (error) {
-    console.error("❌ Error cargando alumnos:", error);
-  }
-}
 </script>
 </body>
 </html>
