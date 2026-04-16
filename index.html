@@ -842,6 +842,14 @@ function importCSVPlantilla(event){
       if(S.students.find(s=>s.matricula===mat)){skipped++;return}
       S.students.push({id:uid(),name,lastName1:ln1,lastName2:ln2,matricula:mat,grupo:grp,phone});
       added++;
+      guardarAlumnoFirebase({
+  name,
+  lastName1: ln1,
+  lastName2: ln2,
+  matricula: mat,
+  grupo: grp,
+  phone
+});
     });
     saveStudents();renderStudents();updateSelectors();
     toast(added+' alumnos importados'+(skipped?' ('+skipped+' omitidos)':''));
@@ -1415,6 +1423,17 @@ init();
   const db = getFirestore(app);
 
   window.db = db;
+  async function guardarAlumnoFirebase(student) {
+  const db = window.db;
+  const schoolId = "demo_school";
+
+  try {
+    await addDoc(collection(db, "schools", schoolId, "students"), student);
+    console.log("Alumno guardado en Firebase");
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   console.log("🔥 Firebase conectado correctamente");
 async function guardarAsistenciaFirebase(student) {
@@ -1443,4 +1462,3 @@ async function guardarAsistenciaFirebase(student) {
 </script>
 </body>
 </html>
-Integración Firebase funcional
