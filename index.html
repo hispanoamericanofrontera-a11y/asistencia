@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--primary:#1e3a5f;--primary-mid:#2a5a8c;--primary-light:#3b82f6;--primary-lighter:#eff6ff;--accent:#0ea5e9;--accent-glow:rgba(14,165,233,0.15);--success:#10b981;--success-bg:#ecfdf5;--warning:#f59e0b;--warning-bg:#fffbeb;--danger:#ef4444;--danger-bg:#fef2f2;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 8px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);--shadow-lg:0 12px 28px rgba(0,0,0,.1);--radius:14px;--radius-sm:10px;--radius-xs:6px;--tr:0.2s cubic-bezier(.4,0,.2,1)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -256,10 +256,10 @@ tr:hover td{background:var(--primary-lighter)}
       <button class="btn btn-accent" onclick="openModal('modalImport')">📤 Importar CSV</button>
       <button class="btn btn-outline" onclick="downloadCSVTemplate()">📋 Plantilla CSV</button>
       <button class="btn btn-success" onclick="exportStudentsCSV()">💾 Exportar</button>
-      <button class="btn btn-primary" onclick="generateAllQR()">📱 Generar Todos QR (ZIP)</button>
+      <button class="btn btn-primary" onclick="generateAllQR()">📄 Generar Todos QR (PDF)</button>
     </div>
     <div style="margin-bottom:16px"><input type="text" id="studentSearch" class="form-input" placeholder="🔍 Buscar por nombre, matrícula o grupo..." oninput="renderStudents()"></div>
-    <div class="table-wrapper"><table id="tableStudents"><thead><tr><th>Nombre</th><th>Apellidos</th><th>Grupo</th><th>Matrícula</th><th>Tutor</th><th>Teléfono</th><th>QR</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
+    <div class="table-wrapper"><table id="tableStudents"><thead><tr><th>Nombre</th><th>Apellidos</th><th>Especialidad</th><th>Grupo</th><th>Matrícula</th><th>Tutor</th><th>Teléfono</th><th>QR</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
     <div id="studentCount" style="margin-top:10px;font-size:12px;color:var(--text-muted);text-align:right"></div>
   </div>
 </div>
@@ -349,8 +349,9 @@ tr:hover td{background:var(--primary-lighter)}
   <div class="modal-body">
     <input type="hidden" id="studentId">
     <div class="form-row"><div class="form-group"><label class="form-label">Nombre(s) *</label><input type="text" id="studentFirstName" class="form-input" placeholder="Ej: Juan Carlos"></div><div class="form-group"><label class="form-label">Apellidos *</label><input type="text" id="studentLastName" class="form-input" placeholder="Ej: García López"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Grupo / Grado *</label><input type="text" id="studentGrupo" class="form-input" placeholder="Ej: 3A"></div><div class="form-group"><label class="form-label">Matrícula *</label><input type="text" id="studentMatricula" class="form-input" placeholder="Ej: 2024001"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Nombre del Tutor</label><input type="text" id="studentTutor" class="form-input" placeholder="Ej: María García"></div><div class="form-group"><label class="form-label">Teléfono del Tutor</label><input type="tel" id="studentPhone" class="form-input" placeholder="Ej: 8661234567"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Especialidad *</label><select id="studentEspecialidad" class="form-select"><option value="">Seleccione...</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div><div class="form-group"><label class="form-label">Grupo / Grado *</label><input type="text" id="studentGrupo" class="form-input" placeholder="Ej: 3A"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Matrícula *</label><input type="text" id="studentMatricula" class="form-input" placeholder="Ej: 2024001"></div><div class="form-group"><label class="form-label">Nombre del Tutor</label><input type="text" id="studentTutor" class="form-input" placeholder="Ej: María García"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Teléfono del Tutor</label><input type="tel" id="studentPhone" class="form-input" placeholder="Ej: 8661234567"></div></div>
   </div>
   <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalStudent')">Cancelar</button><button class="btn btn-primary" onclick="saveStudent()">💾 Guardar</button></div>
 </div></div>
@@ -362,6 +363,7 @@ tr:hover td{background:var(--primary-lighter)}
       <div class="credential-header">CREDENCIAL DE ASISTENCIA ESCOLAR</div>
       <div id="qrcode" style="display:flex;justify-content:center;margin-bottom:12px"></div>
       <div id="qrStudentName" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px"></div>
+      <div id="qrStudentEsp" style="font-size:13px;color:var(--text-secondary);margin-bottom:2px"></div>
       <div id="qrStudentGrade" style="font-size:13px;color:var(--text-secondary);margin-bottom:4px"></div>
       <div id="qrStudentMat" style="font-size:12px;color:var(--text-muted)"></div>
     </div>
@@ -372,7 +374,7 @@ tr:hover td{background:var(--primary-lighter)}
 <div id="modalImport" class="modal-overlay"><div class="modal">
   <div class="modal-header"><div class="modal-title">📤 Importar Alumnos CSV</div><button class="modal-close" onclick="closeModal('modalImport')">✕</button></div>
   <div class="modal-body">
-    <div class="template-info"><span class="template-info-icon">💡</span><div><strong>Columnas:</strong> nombre, apellidos, grupo, matricula, tutor, telefono. La columna <code>id</code> es opcional.<br><br><button class="btn btn-outline btn-sm" onclick="downloadCSVTemplate()">📋 Descargar Plantilla</button></div></div>
+    <div class="template-info"><span class="template-info-icon">💡</span><div><strong>Columnas:</strong> nombre, apellidos, especialidad, grupo, matricula, tutor, telefono. Las columnas <code>id</code> y <code>especialidad</code> son opcionales (especialidad: Secundaria o Preparatoria).<br><br><button class="btn btn-outline btn-sm" onclick="downloadCSVTemplate()">📋 Descargar Plantilla</button></div></div>
     <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvInput').click()"><div class="drop-zone-icon">📄</div><div class="drop-zone-text">Clic o arrastra archivo CSV aquí</div></div>
     <input type="file" id="csvInput" accept=".csv,.txt" style="display:none" onchange="importCSV(event)">
   </div>
@@ -655,15 +657,15 @@ function renderStudents(){
   const search=(document.getElementById('studentSearch')||{}).value||'';
   const sl=search.toLowerCase();
   let list=S.students;
-  if(sl)list=list.filter(s=>fullName(s).toLowerCase().includes(sl)||s.matricula.toLowerCase().includes(sl)||s.grupo.toLowerCase().includes(sl));
+  if(sl)list=list.filter(s=>fullName(s).toLowerCase().includes(sl)||s.matricula.toLowerCase().includes(sl)||s.grupo.toLowerCase().includes(sl)||(s.especialidad||'').toLowerCase().includes(sl));
   const tb=document.querySelector('#tableStudents tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">👥</span>'+(sl?'Sin resultados':'No hay alumnos')+'</td></tr>';document.getElementById('studentCount').textContent='';return}
-  tb.innerHTML=list.map(s=>'<tr><td><strong>'+esc(s.nombre)+'</strong></td><td>'+esc(s.apellidos)+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+esc(s.tutor||'-')+'</td><td>'+esc(s.telefono||'-')+'</td><td><button class="btn btn-accent btn-sm" onclick="showQR(\''+s.id+'\')">📱 QR</button></td><td><div class="btn-group"><button class="btn btn-primary btn-sm" onclick="editStudent(\''+s.id+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStudent(\''+s.id+'\')">🗑️</button></div></td></tr>').join('');
+  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="table-empty"><span class="table-empty-icon">👥</span>'+(sl?'Sin resultados':'No hay alumnos')+'</td></tr>';document.getElementById('studentCount').textContent='';return}
+  tb.innerHTML=list.map(s=>'<tr><td><strong>'+esc(s.nombre)+'</strong></td><td>'+esc(s.apellidos)+'</td><td>'+esc(s.especialidad||'-')+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+esc(s.tutor||'-')+'</td><td>'+esc(s.telefono||'-')+'</td><td><button class="btn btn-accent btn-sm" onclick="showQR(\''+s.id+'\')">📱 QR</button></td><td><div class="btn-group"><button class="btn btn-primary btn-sm" onclick="editStudent(\''+s.id+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStudent(\''+s.id+'\')">🗑️</button></div></td></tr>').join('');
   document.getElementById('studentCount').textContent=list.length+' de '+S.students.length+' alumnos';
 }
 function openAddStudent(){
   document.getElementById('studentModalTitle').textContent='➕ Agregar Alumno';
-  ['studentId','studentFirstName','studentLastName','studentGrupo','studentMatricula','studentTutor','studentPhone'].forEach(id=>document.getElementById(id).value='');
+  ['studentId','studentFirstName','studentLastName','studentEspecialidad','studentGrupo','studentMatricula','studentTutor','studentPhone'].forEach(id=>document.getElementById(id).value='');
   openModal('modalStudent');setTimeout(()=>document.getElementById('studentFirstName').focus(),100);
 }
 function editStudent(id){
@@ -672,6 +674,7 @@ function editStudent(id){
   document.getElementById('studentId').value=s.id;
   document.getElementById('studentFirstName').value=s.nombre;
   document.getElementById('studentLastName').value=s.apellidos;
+  document.getElementById('studentEspecialidad').value=s.especialidad||'';
   document.getElementById('studentGrupo').value=s.grupo;
   document.getElementById('studentMatricula').value=s.matricula;
   document.getElementById('studentTutor').value=s.tutor||'';
@@ -682,13 +685,14 @@ function saveStudent(){
   const id=document.getElementById('studentId').value;
   const nombre=document.getElementById('studentFirstName').value.trim();
   const apellidos=document.getElementById('studentLastName').value.trim();
+  const especialidad=document.getElementById('studentEspecialidad').value.trim();
   const grupo=document.getElementById('studentGrupo').value.trim();
   const matricula=document.getElementById('studentMatricula').value.trim();
   const tutor=document.getElementById('studentTutor').value.trim();
   const telefono=document.getElementById('studentPhone').value.trim();
-  if(!nombre||!apellidos||!grupo||!matricula){toast('Complete campos obligatorios (*)','error');return}
-  if(id){const s=S.students.find(x=>x.id===id);if(s){Object.assign(s,{nombre,apellidos,grupo,matricula,tutor,telefono});cloudSetStudent(s)}toast('Actualizado');}
-  else{if(S.students.some(s=>s.matricula===matricula)){toast('Matrícula duplicada','error');return}const ns={id:genId(),nombre,apellidos,grupo,matricula,tutor,telefono};S.students.push(ns);cloudSetStudent(ns);toast('Alumno agregado');}
+  if(!nombre||!apellidos||!especialidad||!grupo||!matricula){toast('Complete campos obligatorios (*)','error');return}
+  if(id){const s=S.students.find(x=>x.id===id);if(s){Object.assign(s,{nombre,apellidos,especialidad,grupo,matricula,tutor,telefono});cloudSetStudent(s)}toast('Actualizado');}
+  else{if(S.students.some(s=>s.matricula===matricula)){toast('Matrícula duplicada','error');return}const ns={id:genId(),nombre,apellidos,especialidad,grupo,matricula,tutor,telefono};S.students.push(ns);cloudSetStudent(ns);toast('Alumno agregado');}
   saveStudents();closeModal('modalStudent');renderStudents();updateSelectors();
 }
 function deleteStudent(id){
@@ -706,7 +710,7 @@ function deleteStudent(id){
 // CSV
 // ============================================================
 function downloadCSVTemplate(){
-  const csv='nombre,apellidos,grupo,matricula,tutor,telefono\nJuan Carlos,García López,3A,2024001,María García,8661234567\nAna,Martínez Ruiz,3B,2024002,Pedro Martínez,8669876543';
+  const csv='nombre,apellidos,especialidad,grupo,matricula,tutor,telefono\nJuan Carlos,García López,Secundaria,3A,2024001,María García,8661234567\nAna,Martínez Ruiz,Preparatoria,3B,2024002,Pedro Martínez,8669876543';
   const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='plantilla_alumnos.csv';a.click();toast('Plantilla descargada');
 }
@@ -717,6 +721,7 @@ function importCSV(e){
     r.data.forEach(row=>{
       const nombre=(row.nombre||row.Nombre||'').trim();
       const apellidos=(row.apellidos||row.Apellidos||'').trim();
+      const especialidad=(row.especialidad||row.Especialidad||row.nivel||row.Nivel||'').trim();
       const grupo=(row.grupo||row.Grupo||row.grado||row.Grado||'').trim();
       const matricula=(row.matricula||row.Matricula||'').trim();
       const tutor=(row.tutor||row.Tutor||'').trim();
@@ -724,7 +729,7 @@ function importCSV(e){
       const csvId=(row.id||row.ID||'').trim();
       if(nombre&&apellidos&&grupo&&matricula){
         const sid=csvId||genId();
-        if(!S.students.find(s=>s.id===sid||s.matricula===matricula)){const ns={id:sid,nombre,apellidos,grupo,matricula,tutor,telefono};S.students.push(ns);added.push(ns);c++}else{sk++}
+        if(!S.students.find(s=>s.id===sid||s.matricula===matricula)){const ns={id:sid,nombre,apellidos,especialidad,grupo,matricula,tutor,telefono};S.students.push(ns);added.push(ns);c++}else{sk++}
       }
     });
     saveStudents();closeModal('modalImport');renderStudents();updateSelectors();
@@ -736,7 +741,7 @@ function importCSV(e){
 }
 function exportStudentsCSV(){
   if(!S.students.length){toast('No hay alumnos','error');return}
-  const data=S.students.map(s=>({id:s.id,nombre:s.nombre,apellidos:s.apellidos,grupo:s.grupo,matricula:s.matricula,tutor:s.tutor||'',telefono:s.telefono||''}));
+  const data=S.students.map(s=>({id:s.id,nombre:s.nombre,apellidos:s.apellidos,especialidad:s.especialidad||'',grupo:s.grupo,matricula:s.matricula,tutor:s.tutor||'',telefono:s.telefono||''}));
   const csv=Papa.unparse(data);
   const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='alumnos_'+today()+'.csv';a.click();toast('Exportado');
@@ -751,6 +756,7 @@ function showQR(id){
   document.getElementById('qrcode').innerHTML='';
   new QRCode(document.getElementById('qrcode'),{text:s.id,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});
   document.getElementById('qrStudentName').textContent=fullName(s);
+  document.getElementById('qrStudentEsp').textContent=s.especialidad||'';
   document.getElementById('qrStudentGrade').textContent='Grupo: '+s.grupo;
   document.getElementById('qrStudentMat').textContent='Matrícula: '+s.matricula;
   openModal('modalQR');
@@ -767,13 +773,15 @@ function downloadCredentialQR(){
   ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',W/2,32);
   ctx.font='11px Arial';ctx.globalAlpha=.7;ctx.fillText('AsistenciaQR - Control Escolar',W/2,52);ctx.globalAlpha=1;
   ctx.strokeStyle='#1e3a5f';ctx.lineWidth=3;ctx.strokeRect(1.5,1.5,W-3,H-3);
+  ctx.imageSmoothingEnabled=false;
   ctx.drawImage(qc,(W-220)/2,90,220,220);
   ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(40,330);ctx.lineTo(W-40,330);ctx.stroke();
   ctx.fillStyle='#0f172a';const nm=fullName(s);
   ctx.font=nm.length>28?'bold 18px Arial':'bold 22px Arial';
   ctx.fillText(nm,W/2,370);
-  ctx.fillStyle='#475569';ctx.font='600 16px Arial';ctx.fillText('Grupo: '+s.grupo,W/2,400);
-  ctx.font='14px Arial';ctx.fillText('Matrícula: '+s.matricula,W/2,428);
+  ctx.fillStyle='#0ea5e9';ctx.font='600 14px Arial';ctx.fillText(s.especialidad||'',W/2,392);
+  ctx.fillStyle='#475569';ctx.font='600 16px Arial';ctx.fillText('Grupo: '+s.grupo,W/2,414);
+  ctx.font='14px Arial';ctx.fillText('Matrícula: '+s.matricula,W/2,438);
   ctx.fillStyle='#f1f5f9';ctx.fillRect(0,H-50,W,50);
   ctx.fillStyle='#94a3b8';ctx.font='11px Arial';
   ctx.fillText('Generado: '+new Date().toLocaleDateString('es-MX')+' | AsistenciaQR',W/2,H-25);
@@ -783,45 +791,79 @@ function downloadCredentialQR(){
   a.click();toast('Credencial descargada');
 }
 
+function wrapTextLines(ctx,text,maxWidth){
+  const words=String(text).split(' ');let lines=[],cur='';
+  words.forEach(w=>{
+    const test=cur?cur+' '+w:w;
+    if(ctx.measureText(test).width>maxWidth&&cur){lines.push(cur);cur=w}else{cur=test}
+  });
+  if(cur)lines.push(cur);
+  return lines;
+}
+function buildLandscapeCredentialCanvas(s,qc){
+  const W=1000,H=588;
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#1e3a5f';ctx.lineWidth=6;ctx.strokeRect(3,3,W-6,H-6);
+  const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#0f2b46');g.addColorStop(1,'#1a5276');
+  ctx.fillStyle=g;ctx.fillRect(6,6,W-12,64);
+  ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='bold 26px Arial';
+  ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',26,46);
+
+  const qrSize=430,qrX=44,qrY=100;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(qc,qrX,qrY,qrSize,qrSize);
+
+  const tx=qrX+qrSize+50,tw=W-tx-30;
+  let ty=140;
+  ctx.fillStyle='#0f172a';ctx.textAlign='left';ctx.font='bold 36px Arial';
+  wrapTextLines(ctx,fullName(s),tw).slice(0,3).forEach(line=>{ctx.fillText(line,tx,ty);ty+=42});
+  ty+=14;
+  ctx.font='600 24px Arial';ctx.fillStyle='#0ea5e9';
+  ctx.fillText(s.especialidad||'',tx,ty);ty+=38;
+  ctx.font='26px Arial';ctx.fillStyle='#334155';
+  ctx.fillText('Grado: '+s.grupo,tx,ty);ty+=38;
+  ctx.font='bold 26px Arial';ctx.fillStyle='#1e3a5f';
+  ctx.fillText('Matrícula: '+s.matricula,tx,ty);
+  return c;
+}
 async function generateAllQR(){
   if(!S.students.length){toast('No hay alumnos','error');return}
+  if(!window.jspdf){toast('No se pudo cargar el generador de PDF','error');return}
   openModal('modalProgress');
   document.getElementById('progressTitle').textContent='Generando '+S.students.length+' credenciales...';
-  const zip=new JSZip(),folder=zip.folder('credenciales-qr');
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'letter',orientation:'portrait',compress:true});
+  const pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight();
+  const cardW=85,cardH=50,margin=10,gap=3;
+  const cols=Math.max(1,Math.floor((pageW-2*margin+gap)/(cardW+gap)));
+  const rows=Math.max(1,Math.floor((pageH-2*margin+gap)/(cardH+gap)));
+  const gridW=cols*cardW+(cols-1)*gap,gridH=rows*cardH+(rows-1)*gap;
+  const offsetX=(pageW-gridW)/2,offsetY=(pageH-gridH)/2;
+  const perPage=cols*rows;
   const tmp=document.createElement('div');tmp.style.cssText='position:fixed;left:-9999px';document.body.appendChild(tmp);
   for(let i=0;i<S.students.length;i++){
     const s=S.students[i],pct=Math.round(((i+1)/S.students.length)*100);
     document.getElementById('progressBar').style.width=pct+'%';
     document.getElementById('progressText').textContent=(i+1)+' de '+S.students.length+' ('+pct+'%)';
+    const posInPage=i%perPage;
+    if(i>0&&posInPage===0)doc.addPage();
+    const col=posInPage%cols,row=Math.floor(posInPage/cols);
+    const x=offsetX+col*(cardW+gap),y=offsetY+row*(cardH+gap);
     tmp.innerHTML='<div id="tmpQR"></div>';
-    new QRCode(document.getElementById('tmpQR'),{text:s.id,width:250,height:250,correctLevel:QRCode.CorrectLevel.M});
-    await new Promise(r=>setTimeout(r,80));
+    new QRCode(document.getElementById('tmpQR'),{text:s.id,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});
+    await new Promise(r=>setTimeout(r,60));
     const qc=tmp.querySelector('canvas');
-    if(qc){
-      const c=document.createElement('canvas'),ctx=c.getContext('2d'),W=400,H=540;
-      c.width=W;c.height=H;ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-      const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#0f2b46');g.addColorStop(1,'#1a5276');
-      ctx.fillStyle=g;ctx.fillRect(0,0,W,70);ctx.fillStyle='#fff';ctx.font='bold 15px Arial';ctx.textAlign='center';
-      ctx.fillText('CREDENCIAL DE ASISTENCIA ESCOLAR',W/2,32);ctx.font='11px Arial';ctx.globalAlpha=.7;
-      ctx.fillText('AsistenciaQR - Control Escolar',W/2,52);ctx.globalAlpha=1;
-      ctx.strokeStyle='#1e3a5f';ctx.lineWidth=3;ctx.strokeRect(1.5,1.5,W-3,H-3);
-      ctx.drawImage(qc,(W-220)/2,90,220,220);
-      ctx.strokeStyle='#e2e8f0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(40,330);ctx.lineTo(W-40,330);ctx.stroke();
-      ctx.fillStyle='#0f172a';const nm=fullName(s);ctx.font=nm.length>28?'bold 18px Arial':'bold 22px Arial';ctx.fillText(nm,W/2,370);
-      ctx.fillStyle='#475569';ctx.font='600 16px Arial';ctx.fillText('Grupo: '+s.grupo,W/2,400);
-      ctx.font='14px Arial';ctx.fillText('Matrícula: '+s.matricula,W/2,428);
-      ctx.fillStyle='#f1f5f9';ctx.fillRect(0,H-50,W,50);ctx.fillStyle='#94a3b8';ctx.font='11px Arial';ctx.fillText('AsistenciaQR',W/2,H-25);
-      const d=c.toDataURL('image/png').split(',')[1];
-      const fn=(s.grupo+'_'+s.matricula+'_'+s.apellidos+'_'+s.nombre+'.png').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9._-]/g,'');
-      folder.file(fn,d,{base64:true});
-    }
+    if(!qc)continue;
+    const cardCanvas=buildLandscapeCredentialCanvas(s,qc);
+    doc.addImage(cardCanvas.toDataURL('image/png'),'PNG',x,y,cardW,cardH);
   }
   document.body.removeChild(tmp);
-  document.getElementById('progressText').textContent='Comprimiendo ZIP...';
-  const content=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(content);a.download='credenciales-qr-'+today()+'.zip';a.click();
+  document.getElementById('progressText').textContent='Generando PDF...';
+  doc.save('credenciales-qr-'+today()+'.pdf');
   closeModal('modalProgress');document.getElementById('progressBar').style.width='0%';
-  toast(S.students.length+' credenciales generadas');
+  toast(S.students.length+' credenciales generadas en PDF');
 }
 
 // ============================================================
