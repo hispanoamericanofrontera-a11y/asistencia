@@ -161,6 +161,20 @@ tr:hover td{background:var(--primary-lighter)}
 </style>
 </head>
 <body>
+<div id="loginOverlay" style="display:none;position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#0f2b46,#1e3a5f 40%,#1a5276);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:32px;max-width:380px;width:100%">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:8px">📋</div>
+      <div style="font-size:20px;font-weight:800;color:var(--text)">AsistenciaQR</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Inicia sesión para continuar</div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><label class="form-label">Correo</label><input type="email" id="loginEmail" class="form-input" placeholder="tu@correo.com" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="form-group" style="margin-bottom:8px"><label class="form-label">Contraseña</label><input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div id="loginError" style="color:var(--danger);font-size:12px;min-height:16px;margin-bottom:12px"></div>
+    <button class="btn btn-primary btn-lg" style="width:100%" onclick="doLogin()" id="loginBtn">🔑 Iniciar Sesión</button>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:16px;text-align:center">¿No tienes cuenta? Pide al administrador que te agregue desde Firebase Console → Authentication → Users.</div>
+  </div>
+</div>
 <header class="app-header">
   <div class="header-inner">
     <div class="app-logo">
@@ -325,6 +339,11 @@ tr:hover td{background:var(--primary-lighter)}
       <button class="btn btn-outline" onclick="disconnectCloud()">Desconectar</button>
     </div>
     <div style="font-size:12px;color:var(--text-muted);margin-top:8px">Sin conexión a la nube, los datos se guardan solo en este navegador (localStorage).</div>
+  </div>
+  <div class="card" id="accountCard" style="display:none">
+    <div class="card-header"><div class="card-title">🔑 Cuenta</div></div>
+    <div style="font-size:14px;margin-bottom:12px">Sesión iniciada como: <strong id="accountEmail"></strong></div>
+    <button class="btn btn-outline" onclick="doLogout()">🚪 Cerrar Sesión</button>
   </div>
   <div class="card">
     <div class="card-header"><div class="card-title">💾 Respaldo de Datos</div></div>
@@ -507,7 +526,31 @@ function disconnectCloud(){
   localStorage.removeItem('aqr_firebase');
   CLOUD.unsubs.forEach(u=>{try{u()}catch(e){}});CLOUD.unsubs=[];
   CLOUD.on=false;CLOUD.db=null;cloudStatusUI();
+  showLoginOverlay(false);
+  const accCard=document.getElementById('accountCard');if(accCard)accCard.style.display='none';
   toast('Desconectado. Los datos ahora se guardan solo en este dispositivo.','info');
+}
+let AUTH={user:null,listenerAttached:false};
+function showLoginOverlay(show,err){
+  const el=document.getElementById('loginOverlay');
+  if(el)el.style.display=show?'flex':'none';
+  const e=document.getElementById('loginError');
+  if(e)e.textContent=err||'';
+}
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  if(!email||!pass){showLoginOverlay(true,'Completa correo y contraseña');return}
+  const btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='Verificando...';
+  try{
+    await firebase.auth().signInWithEmailAndPassword(email,pass);
+  }catch(e){
+    showLoginOverlay(true,'Correo o contraseña incorrectos');
+  }
+  btn.disabled=false;btn.textContent='🔑 Iniciar Sesión';
+}
+function doLogout(){
+  confirm_('Cerrar sesión','¿Seguro que quieres cerrar sesión?',()=>firebase.auth().signOut());
 }
 async function initCloud(){
   const raw=localStorage.getItem('aqr_firebase');
@@ -518,8 +561,36 @@ async function initCloud(){
     if(!window.firebase){
       await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
       await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
+      await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
     }
     if(!firebase.apps.length)firebase.initializeApp(cfg);
+    const inp=document.getElementById('firebaseConfigInput');
+    if(inp&&!inp.value.trim())inp.value=JSON.stringify(cfg,null,2);
+    if(!AUTH.listenerAttached){
+      AUTH.listenerAttached=true;
+      firebase.auth().onAuthStateChanged(user=>{
+        AUTH.user=user;
+        const accCard=document.getElementById('accountCard');
+        if(user){
+          showLoginOverlay(false);
+          if(accCard){accCard.style.display='';document.getElementById('accountEmail').textContent=user.email}
+          connectFirestore(cfg);
+        }else{
+          if(accCard)accCard.style.display='none';
+          CLOUD.unsubs.forEach(u=>{try{u()}catch(e){}});CLOUD.unsubs=[];
+          CLOUD.on=false;CLOUD.db=null;cloudStatusUI();
+          showLoginOverlay(true);
+        }
+      });
+    }
+  }catch(e){
+    console.error('initCloud:',e);
+    CLOUD.on=false;cloudStatusUI();
+    toast('Error al conectar con Firebase: '+(e.message||e),'error');
+  }
+}
+async function connectFirestore(cfg){
+  try{
     CLOUD.db=firebase.firestore();
     try{await CLOUD.db.enablePersistence({synchronizeTabs:true})}catch(e){console.warn('Offline persistence:',e.code||e)}
     const snap=await CLOUD.db.collection('students').limit(1).get();
@@ -527,13 +598,11 @@ async function initCloud(){
     if(snap.empty&&S.students.length){toast('Subiendo datos locales a la nube...','info');await cloudUploadAll()}
     subscribeCloud();
     cloudStatusUI();
-    const inp=document.getElementById('firebaseConfigInput');
-    if(inp&&!inp.value.trim())inp.value=JSON.stringify(cfg,null,2);
     toast('☁️ Conectado a la nube — datos sincronizados');
   }catch(e){
-    console.error('initCloud:',e);
+    console.error('connectFirestore:',e);
     CLOUD.on=false;cloudStatusUI();
-    toast('Error al conectar con Firebase: '+(e.message||e),'error');
+    toast('Error al conectar con Firestore: '+(e.message||e),'error');
   }
 }
 function subscribeCloud(){
