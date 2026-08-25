@@ -22,6 +22,13 @@
 - **Estado:** Público, Pages activo, HTTPS obligatorio ✅
 - **Archivos viejos eliminados:** `indexgithub.html`, `indexgithub17MAR.html`
 
+### 2b. ✅ Railway configurado (segundo despliegue, en paralelo a GitHub Pages)
+- **Proyecto Railway:** `asistencia-qr`
+- **Dirección:** https://asistenciaescolar.up.railway.app
+- **Auto-deploy:** conectado al repo de GitHub — cada `git push` a `main` redespliega solo
+- **Nube:** conectada (mismo Firebase que GitHub Pages, datos compartidos)
+- **Nota:** cada dominio nuevo (GitHub Pages, Railway) necesita agregarse una vez en Firebase → Authentication → Settings → Authorized domains, y conectar la nube una vez desde ese navegador (Configuración → pegar `firebaseConfig`)
+
 ### 3. ✅ Firebase Firestore configurado
 - **Proyecto:** `asistencia-hispano`
 - **Base de datos:** Firestore (modo de prueba → reglas permisivas)
