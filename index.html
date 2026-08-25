@@ -280,6 +280,7 @@ tr:hover td{background:var(--primary-lighter)}
       <div class="form-group"><label class="form-label">Fecha</label><input type="date" id="filterDate" class="form-input" onchange="renderAbsences()"></div>
       <div class="form-group"><label class="form-label">Mes</label><input type="month" id="filterMonth" class="form-input" onchange="renderAbsences()"></div>
       <div class="form-group" id="filterStudentGroup"><label class="form-label">Alumno</label><select id="filterStudent" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
+      <div class="form-group" id="filterIndividualTypeGroup" style="display:none"><label class="form-label">Mostrar</label><select id="filterIndividualType" class="form-select" onchange="renderAbsences()"><option value="both">Inasistencias y Retardos</option><option value="absences">Solo Inasistencias</option><option value="tardiness">Solo Retardos</option></select></div>
     </div>
     <div class="btn-group">
       <button class="btn btn-success" onclick="exportAbsences()">📄 Exportar Reporte PDF</button>
@@ -1260,10 +1261,12 @@ function selectAbsType(t){
   S.absType=t;
   document.querySelectorAll('.method-tab[data-abs]').forEach(x=>x.classList.remove('active'));
   const tab=document.querySelector('.method-tab[data-abs="'+t+'"]');if(tab)tab.classList.add('active');
+  document.getElementById('filterIndividualTypeGroup').style.display=t==='individual'?'':'none';
   renderAbsences();
 }
 function clearFilters(){
   ['filterDate','filterMonth','filterStudent','filterName','filterGrade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  const fit=document.getElementById('filterIndividualType');if(fit)fit.value='both';
   renderAbsences();toast('Filtros limpiados','info');
 }
 function getSchoolDates(){
@@ -1276,8 +1279,9 @@ function renderAbsences(){
   const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
+  const fit=t==='individual'?(document.getElementById('filterIndividualType')||{}).value||'both':null;
   let recs=[];
-  if(t==='absences'||t==='individual'){
+  if(t==='absences'||(t==='individual'&&fit!=='tardiness')){
     getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
       S.students.forEach(s=>{
@@ -1287,7 +1291,7 @@ function renderAbsences(){
       });
     });
   }
-  if(t==='tardiness'||t==='individual'){
+  if(t==='tardiness'||(t==='individual'&&fit!=='absences')){
     let tr=S.attendance.filter(a=>a.status==='late');
     if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
     tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;
@@ -1297,7 +1301,8 @@ function renderAbsences(){
     });
   }
   recs.sort((a,b)=>b.date.localeCompare(a.date));
-  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:'Individual'};
+  const indivLabels={both:'Individual',absences:'Individual — Solo Inasistencias',tardiness:'Individual — Solo Retardos'};
+  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:indivLabels[fit]||'Individual'};
   document.getElementById('absencesTitle').textContent=(titles[t]||'Resultados')+' ('+recs.length+')';
   const tb=document.querySelector('#tableAbsences tbody');
   if(!recs.length){tb.innerHTML='<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">📊</span>Sin resultados</td></tr>';document.getElementById('absencesStats').innerHTML='';return}
@@ -1342,8 +1347,9 @@ function exportAbsences(){
   const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
+  const fit=t==='individual'?(document.getElementById('filterIndividualType')||{}).value||'both':null;
   let recs=[];
-  if(t==='absences'||t==='individual'){
+  if(t==='absences'||(t==='individual'&&fit!=='tardiness')){
     getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
       S.students.forEach(s=>{if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
@@ -1351,7 +1357,7 @@ function exportAbsences(){
           recs.push({Nombre:fullName(s),Grupo:s.grupo,Matricula:s.matricula,Fecha:date,Tipo:'Inasistencia',Hora:'',Justificada:j?'Sí':'No',Motivo:j?j.reason:''})}});
     });
   }
-  if(t==='tardiness'||t==='individual'){
+  if(t==='tardiness'||(t==='individual'&&fit!=='absences')){
     let tr=S.attendance.filter(a=>a.status==='late');
     if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
     tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
@@ -1362,7 +1368,8 @@ function exportAbsences(){
   if(!recs.length){toast('Sin datos','error');return}
   recs.sort((a,b)=>b.Fecha.localeCompare(a.Fecha));
   if(!window.jspdf||!window.jspdf.jsPDF.API.autoTable){toast('No se pudo cargar el generador de PDF','error');return}
-  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:'Individual'};
+  const indivLabels={both:'Individual',absences:'Individual — Solo Inasistencias',tardiness:'Individual — Solo Retardos'};
+  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:indivLabels[fit]||'Individual'};
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'mm',format:'letter',orientation:'landscape',compress:true});
   const pageW=doc.internal.pageSize.getWidth();
