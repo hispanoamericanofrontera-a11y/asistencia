@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{--primary:#1e3a5f;--primary-mid:#2a5a8c;--primary-light:#3b82f6;--primary-lighter:#eff6ff;--accent:#0ea5e9;--accent-glow:rgba(14,165,233,0.15);--success:#10b981;--success-bg:#ecfdf5;--warning:#f59e0b;--warning-bg:#fffbeb;--danger:#ef4444;--danger-bg:#fef2f2;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--text:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 8px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);--shadow-lg:0 12px 28px rgba(0,0,0,.1);--radius:14px;--radius-sm:10px;--radius-xs:6px;--tr:0.2s cubic-bezier(.4,0,.2,1)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -281,7 +282,7 @@ tr:hover td{background:var(--primary-lighter)}
       <div class="form-group" id="filterStudentGroup"><label class="form-label">Alumno</label><select id="filterStudent" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
     </div>
     <div class="btn-group">
-      <button class="btn btn-success" onclick="exportAbsences()">📥 Exportar Reporte CSV</button>
+      <button class="btn btn-success" onclick="exportAbsences()">📄 Exportar Reporte PDF</button>
       <button class="btn btn-outline" onclick="clearFilters()">🗑️ Limpiar Filtros</button>
     </div>
   </div>
@@ -1359,8 +1360,37 @@ function exportAbsences(){
     });
   }
   if(!recs.length){toast('Sin datos','error');return}
-  const csv=Papa.unparse(recs);const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='reporte_'+t+'_'+today()+'.csv';a.click();toast('Exportado');
+  recs.sort((a,b)=>b.Fecha.localeCompare(a.Fecha));
+  if(!window.jspdf||!window.jspdf.jsPDF.API.autoTable){toast('No se pudo cargar el generador de PDF','error');return}
+  const titles={absences:'Inasistencias',tardiness:'Retardos',individual:'Individual'};
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'letter',orientation:'landscape',compress:true});
+  const pageW=doc.internal.pageSize.getWidth();
+  doc.setFillColor(15,43,70);doc.rect(0,0,pageW,18,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(14);
+  doc.text('Reporte de Asistencia — '+(titles[t]||'Resultados'),10,11.5);
+  doc.setTextColor(30,30,30);doc.setFont('helvetica','normal');doc.setFontSize(9);
+  const filterParts=[];
+  if(fg)filterParts.push('Grado: '+fg);
+  if(fd)filterParts.push('Fecha: '+fmtDate(fd));
+  if(fm)filterParts.push('Mes: '+fm);
+  if(fs){const st=S.students.find(x=>x.id===fs);if(st)filterParts.push('Alumno: '+fullName(st))}
+  if(fn)filterParts.push('Búsqueda: "'+fn+'"');
+  const filterLine=filterParts.length?filterParts.join('  |  '):'Sin filtros (todos los registros)';
+  doc.text('Filtros aplicados: '+filterLine,10,25);
+  const jus=recs.filter(r=>r.Justificada==='Sí').length;
+  doc.text('Total: '+recs.length+'   Justificadas: '+jus+'   Sin justificar: '+(recs.length-jus)+'   Generado: '+new Date().toLocaleString('es-MX'),10,31);
+  doc.autoTable({
+    startY:36,
+    head:[['Nombre','Grupo','Matrícula','Fecha','Tipo','Hora','Justificada','Motivo']],
+    body:recs.map(r=>[r.Nombre,r.Grupo,r.Matricula,fmtDate(r.Fecha),r.Tipo,r.Hora||'—',r.Justificada,r.Motivo||'']),
+    styles:{fontSize:8.5,cellPadding:2.2},
+    headStyles:{fillColor:[30,58,95],textColor:255,fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[241,245,249]},
+    margin:{left:10,right:10}
+  });
+  doc.save('reporte_'+t+'_'+today()+'.pdf');
+  toast('PDF exportado');
 }
 
 // ============================================================
