@@ -302,8 +302,9 @@ tr:hover td{background:var(--primary-lighter)}
       <div class="method-tab" data-abs="individual" onclick="selectAbsType('individual')">👤 Individual</div>
     </div>
     <div class="filters-row">
+      <div class="form-group"><label class="form-label">Especialidad</label><select id="filterEspecialidad" class="form-select" onchange="updateReportGradeOptions();renderAbsences()"><option value="">Todas</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div>
       <div class="form-group"><label class="form-label">Buscar Nombre</label><input type="text" id="filterName" class="form-input" placeholder="Nombre del alumno..." oninput="renderAbsences()"></div>
-      <div class="form-group"><label class="form-label">Grado</label><select id="filterGrade" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
+      <div class="form-group"><label class="form-label">Grado</label><select id="filterGrade" class="form-select" onchange="updateReportStudentOptions();renderAbsences()"><option value="">Todos</option></select></div>
       <div class="form-group"><label class="form-label">Fecha</label><input type="date" id="filterDate" class="form-input" onchange="renderAbsences()"></div>
       <div class="form-group"><label class="form-label">Mes</label><input type="month" id="filterMonth" class="form-input" onchange="renderAbsences()"></div>
       <div class="form-group" id="filterStudentGroup"><label class="form-label">Alumno</label><select id="filterStudent" class="form-select" onchange="renderAbsences()"><option value="">Todos</option></select></div>
@@ -967,12 +968,28 @@ async function generateAllQR(){
 // SELECTORS
 // ============================================================
 function updateSelectors(){
-  const grades=[...new Set(S.students.map(s=>s.grupo))].sort();
-  const rgf=document.getElementById('filterGrade');
-  rgf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
-  const fs=document.getElementById('filterStudent');
-  fs.innerHTML='<option value="">Todos</option>'+S.students.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+')</option>').join('');
+  updateReportGradeOptions();
   updateManualGradeOptions();
+}
+function updateReportGradeOptions(){
+  const esp=(document.getElementById('filterEspecialidad')||{}).value||'';
+  const gf=document.getElementById('filterGrade');
+  const prev=gf.value;
+  const grades=[...new Set(S.students.filter(s=>!esp||s.especialidad===esp).map(s=>s.grupo))].sort();
+  gf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
+  gf.value=grades.includes(prev)?prev:'';
+  updateReportStudentOptions();
+}
+function updateReportStudentOptions(){
+  const esp=(document.getElementById('filterEspecialidad')||{}).value||'';
+  const grade=(document.getElementById('filterGrade')||{}).value||'';
+  const fs=document.getElementById('filterStudent');
+  const prev=fs.value;
+  let list=S.students;
+  if(esp)list=list.filter(s=>s.especialidad===esp);
+  if(grade)list=list.filter(s=>s.grupo===grade);
+  fs.innerHTML='<option value="">Todos</option>'+list.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+')</option>').join('');
+  fs.value=list.some(s=>s.id===prev)?prev:'';
 }
 function updateManualGradeOptions(){
   const esp=(document.getElementById('manualEspecialidadFilter')||{}).value||'';
@@ -1406,8 +1423,9 @@ function selectAbsType(t){
   renderAbsences();
 }
 function clearFilters(){
-  ['filterDate','filterMonth','filterStudent','filterName','filterGrade'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  ['filterDate','filterMonth','filterStudent','filterName','filterGrade','filterEspecialidad'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
   const fit=document.getElementById('filterIndividualType');if(fit)fit.value='both';
+  updateReportGradeOptions();
   renderAbsences();toast('Filtros limpiados','info');
 }
 function getSchoolDates(){
@@ -1429,13 +1447,14 @@ function renderAbsences(){
   const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
+  const fe=(document.getElementById('filterEspecialidad')||{}).value||'';
   const fit=t==='individual'?(document.getElementById('filterIndividualType')||{}).value||'both':null;
   let recs=[];
   if(t==='absences'||(t==='individual'&&fit!=='tardiness')){
     getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
       S.students.forEach(s=>{
-        if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+        if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;if(fe&&s.especialidad!==fe)return;
         if(date>studentEndDate(s))return;if(studentStartDate(s)&&date<studentStartDate(s))return;
         if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);
           recs.push({student:s,date,type:'Inasistencia',time:'',justified:j,reason:j?j.reason:''})}
@@ -1446,7 +1465,7 @@ function renderAbsences(){
     let tr=S.attendance.filter(a=>a.status==='late');
     if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
     tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;
-      if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+      if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;if(fe&&s.especialidad!==fe)return;
       const j=S.justifications.find(jj=>jj.studentId===r.studentId&&jj.date===r.date);
       recs.push({student:s,date:r.date,type:'Retardo',time:r.time,justified:j,reason:j?j.reason:''});
     });
@@ -1498,12 +1517,13 @@ function exportAbsences(){
   const t=S.absType,fd=document.getElementById('filterDate').value,fm=document.getElementById('filterMonth').value;
   const fs=document.getElementById('filterStudent').value,fn=(document.getElementById('filterName')||{}).value||'';
   const fg=document.getElementById('filterGrade').value,fnl=fn.toLowerCase();
+  const fe=(document.getElementById('filterEspecialidad')||{}).value||'';
   const fit=t==='individual'?(document.getElementById('filterIndividualType')||{}).value||'both':null;
   let recs=[];
   if(t==='absences'||(t==='individual'&&fit!=='tardiness')){
     getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
-      S.students.forEach(s=>{if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+      S.students.forEach(s=>{if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;if(fe&&s.especialidad!==fe)return;
         if(date>studentEndDate(s))return;if(studentStartDate(s)&&date<studentStartDate(s))return;
         if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);
           recs.push({Nombre:fullName(s),Grupo:s.grupo,Matricula:s.matricula,Fecha:date,Tipo:'Inasistencia',Hora:'',Justificada:j?'Sí':'No',Motivo:j?j.reason:''})}});
@@ -1512,7 +1532,7 @@ function exportAbsences(){
   if(t==='tardiness'||(t==='individual'&&fit!=='absences')){
     let tr=S.attendance.filter(a=>a.status==='late');
     if(fd)tr=tr.filter(a=>a.date===fd);if(fm)tr=tr.filter(a=>a.date.startsWith(fm));if(fs)tr=tr.filter(a=>a.studentId===fs);
-    tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
+    tr.forEach(r=>{const s=S.students.find(x=>x.id===r.studentId);if(!s)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;if(fe&&s.especialidad!==fe)return;
       const j=S.justifications.find(jj=>jj.studentId===r.studentId&&jj.date===r.date);
       recs.push({Nombre:fullName(s),Grupo:s.grupo,Matricula:s.matricula,Fecha:r.date,Tipo:'Retardo',Hora:r.time,Justificada:j?'Sí':'No',Motivo:j?j.reason:''});
     });
@@ -1530,6 +1550,7 @@ function exportAbsences(){
   doc.text('Reporte de Asistencia — '+(titles[t]||'Resultados'),10,11.5);
   doc.setTextColor(30,30,30);doc.setFont('helvetica','normal');doc.setFontSize(9);
   const filterParts=[];
+  if(fe)filterParts.push('Especialidad: '+fe);
   if(fg)filterParts.push('Grado: '+fg);
   if(fd)filterParts.push('Fecha: '+fmtDate(fd));
   if(fm)filterParts.push('Mes: '+fm);
