@@ -315,7 +315,10 @@ tr:hover td{background:var(--primary-lighter)}
     <div class="form-row">
       <div class="form-group"><label class="form-label">Hora de Inicio de Clases</label><input type="time" id="settingStartTime" class="form-input" value="07:30"></div>
       <div class="form-group"><label class="form-label">Minutos para Retardo</label><input type="number" id="settingLateMinutes" class="form-input" min="1" max="60" value="5"><div style="font-size:11px;color:var(--text-muted);margin-top:4px">Después de este tiempo = Retardo</div></div>
-      <div class="form-group"><label class="form-label">Inicio del Periodo</label><input type="date" id="settingSemesterStart" class="form-input"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Inicio del Periodo — Secundaria</label><input type="date" id="settingSemesterStartSecundaria" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Inicio del Periodo — Preparatoria</label><input type="date" id="settingSemesterStartPreparatoria" class="form-input"><div style="font-size:11px;color:var(--text-muted);margin-top:4px">Útil si Preparatoria empieza después que Secundaria</div></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Fecha de Término — Secundaria</label><input type="date" id="settingSemesterEndSecundaria" class="form-input"><div style="font-size:11px;color:var(--text-muted);margin-top:4px">Después de esta fecha ya no se cuentan inasistencias para Secundaria</div></div>
@@ -441,7 +444,7 @@ tr:hover td{background:var(--primary-lighter)}
 // ============================================================
 // STATE
 // ============================================================
-const S={students:[],attendance:[],justifications:[],holidays:[],settings:{startTime:'07:30',lateMinutes:5,semesterStart:'',semesterEndSecundaria:'',semesterEndPreparatoria:''},absType:'absences',cameraStream:null,cameraActive:false,scanningActive:false,cameras:[],currentQRStudent:null};
+const S={students:[],attendance:[],justifications:[],holidays:[],settings:{startTime:'07:30',lateMinutes:5,semesterStart:'',semesterStartSecundaria:'',semesterStartPreparatoria:'',semesterEndSecundaria:'',semesterEndPreparatoria:''},absType:'absences',cameraStream:null,cameraActive:false,scanningActive:false,cameras:[],currentQRStudent:null};
 
 // ============================================================
 // UTILS
@@ -492,7 +495,8 @@ function saveHolidaysLS(){localStorage.setItem('aqr_holidays',JSON.stringify(S.h
 function saveSettings(){
   S.settings.startTime=document.getElementById('settingStartTime').value||'07:30';
   S.settings.lateMinutes=parseInt(document.getElementById('settingLateMinutes').value)||5;
-  S.settings.semesterStart=document.getElementById('settingSemesterStart').value;
+  S.settings.semesterStartSecundaria=document.getElementById('settingSemesterStartSecundaria').value;
+  S.settings.semesterStartPreparatoria=document.getElementById('settingSemesterStartPreparatoria').value;
   S.settings.semesterEndSecundaria=document.getElementById('settingSemesterEndSecundaria').value;
   S.settings.semesterEndPreparatoria=document.getElementById('settingSemesterEndPreparatoria').value;
   localStorage.setItem('aqr_settings',JSON.stringify(S.settings));
@@ -635,7 +639,8 @@ function subscribeCloud(){
     if(v.holidays){S.holidays=v.holidays;localStorage.setItem('aqr_holidays',JSON.stringify(S.holidays))}
     const st=document.getElementById('settingStartTime');if(st)st.value=S.settings.startTime;
     const lm=document.getElementById('settingLateMinutes');if(lm)lm.value=S.settings.lateMinutes;
-    const ss=document.getElementById('settingSemesterStart');if(ss)ss.value=S.settings.semesterStart||'';
+    const sssc=document.getElementById('settingSemesterStartSecundaria');if(sssc)sssc.value=S.settings.semesterStartSecundaria||S.settings.semesterStart||'';
+    const sspr=document.getElementById('settingSemesterStartPreparatoria');if(sspr)sspr.value=S.settings.semesterStartPreparatoria||'';
     const sesc=document.getElementById('settingSemesterEndSecundaria');if(sesc)sesc.value=S.settings.semesterEndSecundaria||'';
     const sepr=document.getElementById('settingSemesterEndPreparatoria');if(sepr)sepr.value=S.settings.semesterEndPreparatoria||'';
     renderHolidays();updateClock();
@@ -1347,10 +1352,16 @@ function clearFilters(){
   renderAbsences();toast('Filtros limpiados','info');
 }
 function getSchoolDates(){
-  if(!S.settings.semesterStart)return[...new Set(S.attendance.map(a=>a.date))].sort();
-  const st=new Date(S.settings.semesterStart+'T12:00:00'),ed=new Date(),dates=[];
+  const starts=[S.settings.semesterStart,S.settings.semesterStartSecundaria,S.settings.semesterStartPreparatoria].filter(Boolean);
+  if(!starts.length)return[...new Set(S.attendance.map(a=>a.date))].sort();
+  const minStart=starts.sort()[0];
+  const st=new Date(minStart+'T12:00:00'),ed=new Date(),dates=[];
   for(let d=new Date(st);d<=ed;d.setDate(d.getDate()+1)){const ds=d.toISOString().split('T')[0],wd=d.getDay();if(wd!==0&&wd!==6&&!isHoliday(ds))dates.push(ds)}
   return dates;
+}
+function studentStartDate(s){
+  const specific=s.especialidad==='Preparatoria'?S.settings.semesterStartPreparatoria:S.settings.semesterStartSecundaria;
+  return specific||S.settings.semesterStart||'';
 }
 function studentEndDate(s){
   return (s.especialidad==='Preparatoria'?S.settings.semesterEndPreparatoria:S.settings.semesterEndSecundaria)||today();
@@ -1366,7 +1377,7 @@ function renderAbsences(){
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
       S.students.forEach(s=>{
         if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
-        if(date>studentEndDate(s))return;
+        if(date>studentEndDate(s))return;if(studentStartDate(s)&&date<studentStartDate(s))return;
         if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);
           recs.push({student:s,date,type:'Inasistencia',time:'',justified:j,reason:j?j.reason:''})}
       });
@@ -1434,7 +1445,7 @@ function exportAbsences(){
     getSchoolDates().filter(d=>{if(fd&&d!==fd)return false;if(fm&&!d.startsWith(fm))return false;return true}).forEach(date=>{
       const aids=S.attendance.filter(a=>a.date===date).map(a=>a.studentId);
       S.students.forEach(s=>{if(fs&&s.id!==fs)return;if(fnl&&!fullName(s).toLowerCase().includes(fnl))return;if(fg&&s.grupo!==fg)return;
-        if(date>studentEndDate(s))return;
+        if(date>studentEndDate(s))return;if(studentStartDate(s)&&date<studentStartDate(s))return;
         if(!aids.includes(s.id)){const j=S.justifications.find(jj=>jj.studentId===s.id&&jj.date===date);
           recs.push({Nombre:fullName(s),Grupo:s.grupo,Matricula:s.matricula,Fecha:date,Tipo:'Inasistencia',Hora:'',Justificada:j?'Sí':'No',Motivo:j?j.reason:''})}});
     });
@@ -1486,7 +1497,7 @@ function exportAbsences(){
 // RESET
 // ============================================================
 function resetAttendance(){confirm_('Resetear','⚠️ ¿Borrar TODOS los registros de asistencia?'+(CLOUD.on?'<br><br>☁️ También se borrarán de la nube (todos los dispositivos).':''),()=>{S.attendance=[];S.justifications=[];saveAttendance();saveJustifications();if(CLOUD.on){cloudClear('attendance').catch(e=>console.error(e));cloudClear('justifications').catch(e=>console.error(e))}renderToday();renderAbsences();toast('Reseteado','info')})}
-function resetAll(){confirm_('Borrar Todo','🚨 ¿BORRAR TODO? Esto es IRREVERSIBLE.'+(CLOUD.on?'<br><br>☁️ También se borrará de la nube (todos los dispositivos).':''),()=>{S.students=[];S.attendance=[];S.justifications=[];S.holidays=[];S.settings={startTime:'07:30',lateMinutes:5,semesterStart:'',semesterEndSecundaria:'',semesterEndPreparatoria:''};saveStudents();saveAttendance();saveJustifications();saveHolidaysLS();localStorage.setItem('aqr_settings',JSON.stringify(S.settings));if(CLOUD.on){['students','attendance','justifications'].forEach(c=>cloudClear(c).catch(e=>console.error(e)));cloudSetMeta()}refreshAll();toast('Sistema reseteado','info')})}
+function resetAll(){confirm_('Borrar Todo','🚨 ¿BORRAR TODO? Esto es IRREVERSIBLE.'+(CLOUD.on?'<br><br>☁️ También se borrará de la nube (todos los dispositivos).':''),()=>{S.students=[];S.attendance=[];S.justifications=[];S.holidays=[];S.settings={startTime:'07:30',lateMinutes:5,semesterStart:'',semesterStartSecundaria:'',semesterStartPreparatoria:'',semesterEndSecundaria:'',semesterEndPreparatoria:''};saveStudents();saveAttendance();saveJustifications();saveHolidaysLS();localStorage.setItem('aqr_settings',JSON.stringify(S.settings));if(CLOUD.on){['students','attendance','justifications'].forEach(c=>cloudClear(c).catch(e=>console.error(e)));cloudSetMeta()}refreshAll();toast('Sistema reseteado','info')})}
 
 // ============================================================
 // TABS
@@ -1530,7 +1541,8 @@ function updateClock(){
 function refreshAll(){
   document.getElementById('settingStartTime').value=S.settings.startTime;
   document.getElementById('settingLateMinutes').value=S.settings.lateMinutes;
-  document.getElementById('settingSemesterStart').value=S.settings.semesterStart||'';
+  document.getElementById('settingSemesterStartSecundaria').value=S.settings.semesterStartSecundaria||S.settings.semesterStart||'';
+  document.getElementById('settingSemesterStartPreparatoria').value=S.settings.semesterStartPreparatoria||'';
   document.getElementById('settingSemesterEndSecundaria').value=S.settings.semesterEndSecundaria||'';
   document.getElementById('settingSemesterEndPreparatoria').value=S.settings.semesterEndPreparatoria||'';
   renderStudents();updateSelectors();renderToday();renderAbsences();renderHolidays();updateClock();
