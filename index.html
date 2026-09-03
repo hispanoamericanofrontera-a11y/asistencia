@@ -107,12 +107,15 @@ tr:hover td{background:var(--primary-lighter)}
 .camera-status{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.7);color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
 .camera-status.active{background:rgba(16,185,129,.85)}
 .camera-status-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.5s ease-in-out infinite}
-.scan-flash-overlay{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s ease;background:rgba(16,185,129,.97)}
+.scan-flash-banner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(16,185,129,.97);border-radius:var(--radius-sm)}
+.scan-flash-banner.flash-warning{background:rgba(245,158,11,.97)}
+.scan-flash-banner.flash-error{background:rgba(239,68,68,.97)}
+.scan-flash-overlay{position:absolute;inset:0;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s ease;border-radius:0}
 .scan-flash-overlay.show{opacity:1;animation:flashPop .35s cubic-bezier(.34,1.56,.64,1)}
-.scan-flash-overlay.flash-warning{background:rgba(245,158,11,.97)}
-.scan-flash-overlay.flash-error{background:rgba(239,68,68,.97)}
-.scan-flash-icon{font-size:64px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2))}
-.scan-flash-name{font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.scan-flash-static{display:none;margin-bottom:16px}
+.scan-flash-static.show{display:flex;animation:flashPop .35s cubic-bezier(.34,1.56,.64,1)}
+.scan-flash-icon{font-size:56px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2))}
+.scan-flash-name{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.2)}
 .scan-flash-detail{font-size:14px;font-weight:600;color:#fff;opacity:.95}
 @keyframes flashPop{0%{transform:scale(.85)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -232,7 +235,7 @@ tr:hover td{background:var(--primary-lighter)}
           <video id="qrVideo" autoplay playsinline muted></video>
           <div class="scan-overlay"><div class="scan-frame"><div class="scan-corner tl"></div><div class="scan-corner tr"></div><div class="scan-corner bl"></div><div class="scan-corner br"></div><div class="scan-line"></div></div></div>
           <div class="camera-status" id="cameraStatus"><div class="camera-status-dot"></div><span>Inicializando...</span></div>
-          <div id="scanFlashOverlay" class="scan-flash-overlay"><div class="scan-flash-icon" id="scanFlashIcon"></div><div class="scan-flash-name" id="scanFlashName"></div><div class="scan-flash-detail" id="scanFlashDetail"></div></div>
+          <div id="scanFlashOverlay" class="scan-flash-banner scan-flash-overlay"><div class="scan-flash-icon" id="scanFlashIcon"></div><div class="scan-flash-name" id="scanFlashName"></div><div class="scan-flash-detail" id="scanFlashDetail"></div></div>
         </div>
       </div>
       <div id="scanResult"></div>
@@ -262,6 +265,7 @@ tr:hover td{background:var(--primary-lighter)}
         <div class="form-group"><label class="form-label">Estado</label><select id="manualStatus" class="form-select"><option value="ontime">✅ A tiempo</option><option value="late">⏰ Retardo</option></select></div>
       </div>
       <button class="btn btn-success btn-lg" style="width:100%" onclick="registerManual()">✓ Registrar Asistencia</button>
+      <div id="manualFlash" class="scan-flash-banner scan-flash-static" style="margin-top:16px;margin-bottom:0"><div class="scan-flash-icon" id="manualFlashIcon"></div><div class="scan-flash-name" id="manualFlashName"></div><div class="scan-flash-detail" id="manualFlashDetail"></div></div>
     </div>
   </div>
   <div class="card">
@@ -1283,15 +1287,19 @@ function showScan(type,icon,title,detail){
   const cls=type==='success'?'scan-result-success':type==='warning'?'scan-result-warning':'scan-result-error';
   document.getElementById('scanResult').innerHTML='<div class="scan-result '+cls+'"><div class="scan-result-icon">'+icon+'</div><div class="scan-result-content"><div class="scan-result-name">'+title+'</div><div class="scan-result-meta">'+detail+'</div></div></div>';
 }
-function showScanFlash(type,icon,name,detail){
-  const el=document.getElementById('scanFlashOverlay');if(!el)return;
-  el.className='scan-flash-overlay show'+(type==='warning'?' flash-warning':type==='error'?' flash-error':'');
-  document.getElementById('scanFlashIcon').textContent=icon;
-  document.getElementById('scanFlashName').textContent=name;
-  document.getElementById('scanFlashDetail').innerHTML=detail;
+function showFlash(elId,type,icon,name,detail,hideMs){
+  const el=document.getElementById(elId);if(!el)return;
+  el.classList.remove('flash-warning','flash-error');
+  if(type==='warning')el.classList.add('flash-warning');
+  else if(type==='error')el.classList.add('flash-error');
+  el.querySelector('.scan-flash-icon').textContent=icon;
+  el.querySelector('.scan-flash-name').textContent=name;
+  el.querySelector('.scan-flash-detail').innerHTML=detail;
+  el.classList.add('show');
   clearTimeout(el._hideTimer);
-  el._hideTimer=setTimeout(()=>{el.classList.remove('show')},1800);
+  el._hideTimer=setTimeout(()=>{el.classList.remove('show')},hideMs||1800);
 }
+function showScanFlash(type,icon,name,detail){showFlash('scanFlashOverlay',type,icon,name,detail,1800)}
 function playBeep(type){
   try{
     const c=new(window.AudioContext||window.webkitAudioContext)();
@@ -1358,11 +1366,13 @@ function registerManual(){
   if(!sid){toast('Seleccione alumno','error');return}
   const s=S.students.find(x=>x.id===sid);if(!s)return;
   const td=today(),ex=S.attendance.find(a=>a.studentId===sid&&a.date===td);
-  if(ex){toast(fullName(s)+' ya registrado','error');return}
+  if(ex){showFlash('manualFlash','warning','⚠️',fullName(s),'Ya registrado — '+ex.time,2200);playBeep('warning');return}
   const tm=now(),st=document.getElementById('manualStatus').value;
   const rec={studentId:sid,date:td,time:tm,status:st,source:'manual',device:'N/A',browser:'N/A'};
   S.attendance.push(rec);
-  saveAttendance();cloudSetAttendance(rec);renderToday();toast(fullName(s)+' — Estado: '+(st==='ontime'?'A tiempo':'Retardo'));
+  saveAttendance();cloudSetAttendance(rec);renderToday();
+  showFlash('manualFlash',st==='ontime'?'success':'warning',st==='ontime'?'✅':'⏰',fullName(s),'Registrado — '+(st==='ontime'?'A TIEMPO':'RETARDO')+' · '+tm,2200);
+  playBeep(st==='ontime'?'success':'warning');
   document.getElementById('manualStudentSelect').value='';
 }
 

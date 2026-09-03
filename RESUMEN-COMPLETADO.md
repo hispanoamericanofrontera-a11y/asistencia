@@ -39,7 +39,7 @@
 ### 4. ✅ Configuración guardada en el sistema
 ```json
 firebaseConfig = {
-  apiKey: "AIzaSyC7s9LE3UYigF60B6zkRfSg7SwQdpgpkpo",
+  apiKey: "AIzaSyC7s9lE3UYigF6OB6zkRfSg7SwQdpgpkpo",
   authDomain: "asistencia-hispano.firebaseapp.com",
   projectId: "asistencia-hispano",
   storageBucket: "asistencia-hispano.firebasestorage.app",
@@ -48,6 +48,8 @@ firebaseConfig = {
 }
 ```
 **Ubicación:** Sistema → Configuración → "☁️ Base de Datos en la Nube"
+
+> ⚠️ **Corrección (25 ago 2026):** el `apiKey` de arriba tenía dos caracteres mal transcritos originalmente ("L" mayúscula en vez de "l" minúscula, y "0" cero en vez de "O" mayúscula) — Firestore funcionaba igual porque no valida la key tan estricto, pero Firebase Authentication sí, y por eso el login fallaba. Ya está corregido en este documento. Si algún dispositivo tiene guardada la versión vieja, hay que volver a pegar esta configuración en Configuración → Base de Datos en la Nube.
 
 ---
 
