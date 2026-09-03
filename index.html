@@ -247,7 +247,7 @@ tr:hover td{background:var(--primary-lighter)}
     <div class="card">
       <div class="card-header"><div class="card-title">✍️ Registro Manual</div></div>
       <div class="filters-row">
-        <div class="form-group"><label class="form-label">Buscar por Nombre</label><input type="text" id="manualNameSearch" class="form-input" placeholder="Escribe el nombre..." oninput="filterManualStudents()"></div>
+        <div class="form-group"><label class="form-label">Especialidad</label><select id="manualEspecialidadFilter" class="form-select" onchange="updateManualGradeOptions();filterManualStudents()"><option value="">Todas</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div>
         <div class="form-group"><label class="form-label">Filtrar por Grado</label><select id="manualGradeFilter" class="form-select" onchange="filterManualStudents()"><option value="">Todos</option></select></div>
         <div class="form-group"><label class="form-label">Alumno</label><select id="manualStudentSelect" class="form-select"><option value="">Seleccione...</option></select></div>
         <div class="form-group"><label class="form-label">Estado</label><select id="manualStatus" class="form-select"><option value="ontime">✅ A tiempo</option><option value="late">⏰ Retardo</option></select></div>
@@ -955,22 +955,28 @@ async function generateAllQR(){
 // ============================================================
 function updateSelectors(){
   const grades=[...new Set(S.students.map(s=>s.grupo))].sort();
-  const gf=document.getElementById('manualGradeFilter');
-  gf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
   const rgf=document.getElementById('filterGrade');
   rgf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
   const fs=document.getElementById('filterStudent');
   fs.innerHTML='<option value="">Todos</option>'+S.students.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+')</option>').join('');
+  updateManualGradeOptions();
+}
+function updateManualGradeOptions(){
+  const esp=(document.getElementById('manualEspecialidadFilter')||{}).value||'';
+  const gf=document.getElementById('manualGradeFilter');
+  const prev=gf.value;
+  const grades=[...new Set(S.students.filter(s=>!esp||s.especialidad===esp).map(s=>s.grupo))].sort();
+  gf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
+  gf.value=grades.includes(prev)?prev:'';
   filterManualStudents();
 }
 function filterManualStudents(){
+  const esp=(document.getElementById('manualEspecialidadFilter')||{}).value||'';
   const grade=document.getElementById('manualGradeFilter').value;
-  const search=(document.getElementById('manualNameSearch')||{}).value||'';
-  const sl=search.toLowerCase();
   const sel=document.getElementById('manualStudentSelect');
   let f=S.students;
+  if(esp)f=f.filter(s=>s.especialidad===esp);
   if(grade)f=f.filter(s=>s.grupo===grade);
-  if(sl)f=f.filter(s=>fullName(s).toLowerCase().includes(sl));
   sel.innerHTML='<option value="">Seleccione...</option>'+f.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+' - '+s.matricula+')</option>').join('');
 }
 
