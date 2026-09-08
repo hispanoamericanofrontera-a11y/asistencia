@@ -214,6 +214,7 @@ tr:hover td{background:var(--primary-lighter)}
     <div class="method-tab active" data-method="camera" onclick="selectMethod('camera')">📷 Escanear QR</div>
     <div class="method-tab" data-method="image" onclick="selectMethod('image')">🖼️ Desde Imagen</div>
     <div class="method-tab" data-method="manual" onclick="selectMethod('manual')">✍️ Manual</div>
+    <div class="method-tab" data-method="roll" onclick="selectMethod('roll')">📋 Pase de Lista</div>
   </div>
   <!-- CÁMARA -->
   <div id="method-camera" class="method-content active">
@@ -268,6 +269,19 @@ tr:hover td{background:var(--primary-lighter)}
       <div id="manualFlash" class="scan-flash-banner scan-flash-static" style="margin-top:16px;margin-bottom:0"><div class="scan-flash-icon" id="manualFlashIcon"></div><div class="scan-flash-name" id="manualFlashName"></div><div class="scan-flash-detail" id="manualFlashDetail"></div></div>
     </div>
   </div>
+  <!-- PASE DE LISTA -->
+  <div id="method-roll" class="method-content">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 Pase de Lista Rápido</div></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Marca solo a los alumnos <strong>ausentes</strong>. Al confirmar, el resto del grupo filtrado se registrará automáticamente como presente (a tiempo). Los alumnos ya registrados hoy no se modifican.</div>
+      <div class="filters-row">
+        <div class="form-group"><label class="form-label">Especialidad</label><select id="rollEspecialidadFilter" class="form-select" onchange="updateRollGradeOptions()"><option value="">Todas</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div>
+        <div class="form-group"><label class="form-label">Grado/Grupo</label><select id="rollGradeFilter" class="form-select" onchange="renderRollList()"><option value="">Todos</option></select></div>
+      </div>
+      <div class="table-wrapper"><table id="tableRoll"><thead><tr><th>Falta</th><th>Nombre</th><th>Grupo</th><th>Matrícula</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
+      <button class="btn btn-success btn-lg" style="width:100%;margin-top:16px" onclick="confirmRollCall()">✓ Confirmar — Registrar Presentes y Marcar Faltas</button>
+    </div>
+  </div>
   <div class="card">
     <div class="card-header"><div class="card-title">📋 Registros de Hoy</div><button class="btn btn-outline btn-sm" onclick="renderToday()">🔄</button></div>
     <div class="stats-grid" id="statsToday"></div>
@@ -286,7 +300,11 @@ tr:hover td{background:var(--primary-lighter)}
       <button class="btn btn-success" onclick="exportStudentsCSV()">💾 Exportar</button>
       <button class="btn btn-primary" onclick="generateAllQR()">📄 Generar Todos QR (PDF)</button>
     </div>
-    <div style="margin-bottom:16px"><input type="text" id="studentSearch" class="form-input" placeholder="🔍 Buscar por nombre, matrícula o grupo..." oninput="renderStudents()"></div>
+    <div class="filters-row" style="margin-bottom:16px">
+      <div class="form-group"><label class="form-label">Especialidad</label><select id="studentEspecialidadFilter" class="form-select" onchange="renderStudents()"><option value="">Todas</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div>
+      <div class="form-group"><label class="form-label">Grado</label><select id="studentGradeFilter" class="form-select" onchange="renderStudents()"><option value="">Todos</option><option value="1">1°</option><option value="2">2°</option><option value="3">3°</option></select></div>
+      <div class="form-group"><label class="form-label">Nombre del Alumno</label><input type="text" id="studentSearch" class="form-input" placeholder="🔍 Buscar por nombre, matrícula o grupo..." oninput="renderStudents()"></div>
+    </div>
     <div class="table-wrapper"><table id="tableStudents"><thead><tr><th>Nombre</th><th>Apellidos</th><th>Especialidad</th><th>Grupo</th><th>Matrícula</th><th>Tutor</th><th>Teléfono</th><th>QR</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
     <div id="studentCount" style="margin-top:10px;font-size:12px;color:var(--text-muted);text-align:right"></div>
   </div>
@@ -393,8 +411,9 @@ tr:hover td{background:var(--primary-lighter)}
     <div class="form-row"><div class="form-group"><label class="form-label">Nombre(s) *</label><input type="text" id="studentFirstName" class="form-input" placeholder="Ej: Juan Carlos"></div><div class="form-group"><label class="form-label">Apellidos *</label><input type="text" id="studentLastName" class="form-input" placeholder="Ej: García López"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Especialidad *</label><select id="studentEspecialidad" class="form-select"><option value="">Seleccione...</option><option value="Secundaria">Secundaria</option><option value="Preparatoria">Preparatoria</option></select></div><div class="form-group"><label class="form-label">Grupo / Grado *</label><input type="text" id="studentGrupo" class="form-input" placeholder="Ej: 3A"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Matrícula *</label><input type="text" id="studentMatricula" class="form-input" placeholder="Ej: 2024001"></div><div class="form-group"><label class="form-label">Nombre del Tutor</label><input type="text" id="studentTutor" class="form-input" placeholder="Ej: María García"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Teléfono del Tutor</label><input type="tel" id="studentPhone" class="form-input" placeholder="Ej: 8661234567"></div></div>
-  </div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Teléfono del Tutor</label><input type="tel" id="studentPhone" class="form-input" placeholder="Ej: 8661234567"></div><div class="form-group"><label class="form-label">Fecha de Ingreso</label><input type="date" id="studentFechaIngreso" class="form-input"></div></div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:-8px">Opcional. Solo llénala si el alumno ingresó después del inicio del semestre — evita que le aparezcan faltas de días previos a su ingreso. Déjala vacía si ingresó desde el inicio.</div>
+</div>
   <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalStudent')">Cancelar</button><button class="btn btn-primary" onclick="saveStudent()">💾 Guardar</button></div>
 </div></div>
 
@@ -416,7 +435,7 @@ tr:hover td{background:var(--primary-lighter)}
 <div id="modalImport" class="modal-overlay"><div class="modal">
   <div class="modal-header"><div class="modal-title">📤 Importar Alumnos CSV</div><button class="modal-close" onclick="closeModal('modalImport')">✕</button></div>
   <div class="modal-body">
-    <div class="template-info"><span class="template-info-icon">💡</span><div><strong>Columnas:</strong> nombre, apellidos, especialidad, grupo, matricula, tutor, telefono. Las columnas <code>id</code> y <code>especialidad</code> son opcionales (especialidad: Secundaria o Preparatoria).<br><br><button class="btn btn-outline btn-sm" onclick="downloadCSVTemplate()">📋 Descargar Plantilla</button></div></div>
+    <div class="template-info"><span class="template-info-icon">💡</span><div><strong>Columnas:</strong> nombre, apellidos, especialidad, grupo, matricula, tutor, telefono, fechaIngreso. Las columnas <code>id</code>, <code>especialidad</code> y <code>fechaIngreso</code> son opcionales (especialidad: Secundaria o Preparatoria; fechaIngreso formato AAAA-MM-DD, solo para alumnos que entraron después del inicio de semestre).<br><br><button class="btn btn-outline btn-sm" onclick="downloadCSVTemplate()">📋 Descargar Plantilla</button></div></div>
     <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvInput').click()"><div class="drop-zone-icon">📄</div><div class="drop-zone-text">Clic o arrastra archivo CSV aquí</div></div>
     <input type="file" id="csvInput" accept=".csv,.txt" style="display:none" onchange="importCSV(event)">
   </div>
@@ -754,16 +773,20 @@ function renderHolidays(){
 function renderStudents(){
   const search=(document.getElementById('studentSearch')||{}).value||'';
   const sl=search.toLowerCase();
+  const esp=(document.getElementById('studentEspecialidadFilter')||{}).value||'';
+  const grade=(document.getElementById('studentGradeFilter')||{}).value||'';
   let list=S.students;
+  if(esp)list=list.filter(s=>s.especialidad===esp);
+  if(grade)list=list.filter(s=>(s.grupo||'').trim().charAt(0)===grade);
   if(sl)list=list.filter(s=>fullName(s).toLowerCase().includes(sl)||s.matricula.toLowerCase().includes(sl)||s.grupo.toLowerCase().includes(sl)||(s.especialidad||'').toLowerCase().includes(sl));
   const tb=document.querySelector('#tableStudents tbody');
-  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="table-empty"><span class="table-empty-icon">👥</span>'+(sl?'Sin resultados':'No hay alumnos')+'</td></tr>';document.getElementById('studentCount').textContent='';return}
+  if(!list.length){tb.innerHTML='<tr><td colspan="9" class="table-empty"><span class="table-empty-icon">👥</span>'+((sl||esp||grade)?'Sin resultados':'No hay alumnos')+'</td></tr>';document.getElementById('studentCount').textContent='';return}
   tb.innerHTML=list.map(s=>'<tr><td><strong>'+esc(s.nombre)+'</strong></td><td>'+esc(s.apellidos)+'</td><td>'+esc(s.especialidad||'-')+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+esc(s.tutor||'-')+'</td><td>'+esc(s.telefono||'-')+'</td><td><button class="btn btn-accent btn-sm" onclick="showQR(\''+s.id+'\')">📱 QR</button></td><td><div class="btn-group"><button class="btn btn-primary btn-sm" onclick="editStudent(\''+s.id+'\')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteStudent(\''+s.id+'\')">🗑️</button></div></td></tr>').join('');
   document.getElementById('studentCount').textContent=list.length+' de '+S.students.length+' alumnos';
 }
 function openAddStudent(){
   document.getElementById('studentModalTitle').textContent='➕ Agregar Alumno';
-  ['studentId','studentFirstName','studentLastName','studentEspecialidad','studentGrupo','studentMatricula','studentTutor','studentPhone'].forEach(id=>document.getElementById(id).value='');
+  ['studentId','studentFirstName','studentLastName','studentEspecialidad','studentGrupo','studentMatricula','studentTutor','studentPhone','studentFechaIngreso'].forEach(id=>document.getElementById(id).value='');
   openModal('modalStudent');setTimeout(()=>document.getElementById('studentFirstName').focus(),100);
 }
 function editStudent(id){
@@ -777,6 +800,7 @@ function editStudent(id){
   document.getElementById('studentMatricula').value=s.matricula;
   document.getElementById('studentTutor').value=s.tutor||'';
   document.getElementById('studentPhone').value=s.telefono||'';
+  document.getElementById('studentFechaIngreso').value=s.fechaIngreso||'';
   openModal('modalStudent');setTimeout(()=>document.getElementById('studentFirstName').focus(),100);
 }
 function saveStudent(){
@@ -788,9 +812,10 @@ function saveStudent(){
   const matricula=document.getElementById('studentMatricula').value.trim();
   const tutor=document.getElementById('studentTutor').value.trim();
   const telefono=document.getElementById('studentPhone').value.trim();
+  const fechaIngreso=document.getElementById('studentFechaIngreso').value;
   if(!nombre||!apellidos||!especialidad||!grupo||!matricula){toast('Complete campos obligatorios (*)','error');return}
-  if(id){const s=S.students.find(x=>x.id===id);if(s){Object.assign(s,{nombre,apellidos,especialidad,grupo,matricula,tutor,telefono});cloudSetStudent(s)}toast('Actualizado');}
-  else{if(S.students.some(s=>s.matricula===matricula)){toast('Matrícula duplicada','error');return}const ns={id:genId(),nombre,apellidos,especialidad,grupo,matricula,tutor,telefono};S.students.push(ns);cloudSetStudent(ns);toast('Alumno agregado');}
+  if(id){const s=S.students.find(x=>x.id===id);if(s){Object.assign(s,{nombre,apellidos,especialidad,grupo,matricula,tutor,telefono,fechaIngreso});cloudSetStudent(s)}toast('Actualizado');}
+  else{if(S.students.some(s=>s.matricula===matricula)){toast('Matrícula duplicada','error');return}const ns={id:genId(),nombre,apellidos,especialidad,grupo,matricula,tutor,telefono,fechaIngreso};S.students.push(ns);cloudSetStudent(ns);toast('Alumno agregado');}
   saveStudents();closeModal('modalStudent');renderStudents();updateSelectors();
 }
 function deleteStudent(id){
@@ -808,7 +833,7 @@ function deleteStudent(id){
 // CSV
 // ============================================================
 function downloadCSVTemplate(){
-  const csv='nombre,apellidos,especialidad,grupo,matricula,tutor,telefono\nJuan Carlos,García López,Secundaria,3A,2024001,María García,8661234567\nAna,Martínez Ruiz,Preparatoria,3B,2024002,Pedro Martínez,8669876543';
+  const csv='nombre,apellidos,especialidad,grupo,matricula,tutor,telefono,fechaIngreso\nJuan Carlos,García López,Secundaria,3A,2024001,María García,8661234567,\nAna,Martínez Ruiz,Preparatoria,3B,2024002,Pedro Martínez,8669876543,2026-10-01';
   const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='plantilla_alumnos.csv';a.click();toast('Plantilla descargada');
 }
@@ -824,10 +849,11 @@ function importCSV(e){
       const matricula=(row.matricula||row.Matricula||'').trim();
       const tutor=(row.tutor||row.Tutor||'').trim();
       const telefono=(row.telefono||row.Telefono||row.celular||'').trim();
+      const fechaIngreso=(row.fechaIngreso||row.FechaIngreso||row['Fecha de Ingreso']||row['fecha_ingreso']||'').trim();
       const csvId=(row.id||row.ID||'').trim();
       if(nombre&&apellidos&&grupo&&matricula){
         const sid=csvId||genId();
-        if(!S.students.find(s=>s.id===sid||s.matricula===matricula)){const ns={id:sid,nombre,apellidos,especialidad,grupo,matricula,tutor,telefono};S.students.push(ns);added.push(ns);c++}else{sk++}
+        if(!S.students.find(s=>s.id===sid||s.matricula===matricula)){const ns={id:sid,nombre,apellidos,especialidad,grupo,matricula,tutor,telefono,fechaIngreso};S.students.push(ns);added.push(ns);c++}else{sk++}
       }
     });
     saveStudents();closeModal('modalImport');renderStudents();updateSelectors();
@@ -839,7 +865,7 @@ function importCSV(e){
 }
 function exportStudentsCSV(){
   if(!S.students.length){toast('No hay alumnos','error');return}
-  const data=S.students.map(s=>({id:s.id,nombre:s.nombre,apellidos:s.apellidos,especialidad:s.especialidad||'',grupo:s.grupo,matricula:s.matricula,tutor:s.tutor||'',telefono:s.telefono||''}));
+  const data=S.students.map(s=>({id:s.id,nombre:s.nombre,apellidos:s.apellidos,especialidad:s.especialidad||'',grupo:s.grupo,matricula:s.matricula,tutor:s.tutor||'',telefono:s.telefono||'',fechaIngreso:s.fechaIngreso||''}));
   const csv=Papa.unparse(data);
   const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='alumnos_'+today()+'.csv';a.click();toast('Exportado');
@@ -970,6 +996,7 @@ async function generateAllQR(){
 function updateSelectors(){
   updateReportGradeOptions();
   updateManualGradeOptions();
+  updateRollGradeOptions();
 }
 function updateReportGradeOptions(){
   const esp=(document.getElementById('filterEspecialidad')||{}).value||'';
@@ -1009,6 +1036,56 @@ function filterManualStudents(){
   if(grade)f=f.filter(s=>s.grupo===grade);
   sel.innerHTML='<option value="">Seleccione...</option>'+f.map(s=>'<option value="'+s.id+'">'+fullName(s)+' ('+s.grupo+' - '+s.matricula+')</option>').join('');
 }
+function updateRollGradeOptions(){
+  const esp=(document.getElementById('rollEspecialidadFilter')||{}).value||'';
+  const gf=document.getElementById('rollGradeFilter');
+  const prev=gf.value;
+  const grades=[...new Set(S.students.filter(s=>!esp||s.especialidad===esp).map(s=>s.grupo))].sort();
+  gf.innerHTML='<option value="">Todos</option>'+grades.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
+  gf.value=grades.includes(prev)?prev:'';
+  renderRollList();
+}
+function renderRollList(){
+  const esp=(document.getElementById('rollEspecialidadFilter')||{}).value||'';
+  const grade=(document.getElementById('rollGradeFilter')||{}).value||'';
+  let list=S.students;
+  if(esp)list=list.filter(s=>s.especialidad===esp);
+  if(grade)list=list.filter(s=>s.grupo===grade);
+  const td=today();
+  const tb=document.querySelector('#tableRoll tbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="5" class="table-empty"><span class="table-empty-icon">📋</span>No hay alumnos en este filtro</td></tr>';return}
+  tb.innerHTML=list.map(s=>{
+    const ex=S.attendance.find(a=>a.studentId===s.id&&a.date===td);
+    if(ex){
+      const lbl=ex.status==='ontime'?'✅ A tiempo · '+ex.time:'⏰ Retardo · '+ex.time;
+      return '<tr style="opacity:.55"><td><input type="checkbox" disabled></td><td>'+esc(fullName(s))+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>'+lbl+' (ya registrado)</td></tr>';
+    }
+    return '<tr><td><input type="checkbox" class="roll-absent-cb" data-id="'+s.id+'"></td><td>'+esc(fullName(s))+'</td><td><span class="badge badge-info">'+esc(s.grupo)+'</span></td><td>'+esc(s.matricula)+'</td><td>Pendiente</td></tr>';
+  }).join('');
+}
+function confirmRollCall(){
+  const esp=(document.getElementById('rollEspecialidadFilter')||{}).value||'';
+  const grade=(document.getElementById('rollGradeFilter')||{}).value||'';
+  let list=S.students;
+  if(esp)list=list.filter(s=>s.especialidad===esp);
+  if(grade)list=list.filter(s=>s.grupo===grade);
+  if(!list.length){toast('No hay alumnos en este filtro','error');return}
+  const absentIds=new Set([...document.querySelectorAll('.roll-absent-cb:checked')].map(cb=>cb.dataset.id));
+  const pending=list.filter(s=>!S.attendance.some(a=>a.studentId===s.id&&a.date===today()));
+  if(!pending.length){toast('Todos los alumnos de este filtro ya tienen registro hoy','info');return}
+  const willPresent=pending.filter(s=>!absentIds.has(s.id)).length,willAbsent=pending.length-willPresent;
+  confirm_('Confirmar Pase de Lista','¿Registrar <strong>'+willPresent+'</strong> alumno(s) como presentes y dejar <strong>'+willAbsent+'</strong> como falta?',()=>{
+    const td=today(),tm=now();
+    let presentCount=0,absentCount=0;
+    pending.forEach(s=>{
+      if(absentIds.has(s.id)){absentCount++;return}
+      const rec={studentId:s.id,date:td,time:tm,status:'ontime',source:'roll-call',device:'N/A',browser:'N/A'};
+      S.attendance.push(rec);cloudSetAttendance(rec);presentCount++;
+    });
+    saveAttendance();renderToday();renderAbsences();renderRollList();
+    toast(presentCount+' presentes registrados · '+absentCount+' faltas marcadas','success');
+  });
+}
 
 // ============================================================
 // METHODS
@@ -1019,6 +1096,7 @@ function selectMethod(m){
   const tab=document.querySelector('.method-tab[data-method="'+m+'"]');if(tab)tab.classList.add('active');
   const panel=document.getElementById('method-'+m);if(panel)panel.classList.add('active');
   if(m!=='camera')stopCamera();
+  if(m==='roll')renderRollList();
 }
 
 // ============================================================
@@ -1437,6 +1515,7 @@ function getSchoolDates(){
   return dates;
 }
 function studentStartDate(s){
+  if(s.fechaIngreso)return s.fechaIngreso;
   const specific=s.especialidad==='Preparatoria'?S.settings.semesterStartPreparatoria:S.settings.semesterStartSecundaria;
   return specific||S.settings.semesterStart||'';
 }
